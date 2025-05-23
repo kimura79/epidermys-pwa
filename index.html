@@ -160,65 +160,69 @@
   </div>
 
   <script>
-    const modal = document.getElementById("modal");
-    const photoInput = document.getElementById("photoInput");
-    const uploadBox = document.getElementById("uploadBox");
-    const preview = document.getElementById("preview");
-    const uploadText = document.getElementById("uploadText");
+  const modal = document.getElementById("modal");
+  const photoInput = document.getElementById("photoInput");
+  const uploadBox = document.getElementById("uploadBox");
+  const preview = document.getElementById("preview");
+  const uploadText = document.getElementById("uploadText");
 
-    uploadBox.addEventListener("click", () => {
-      modal.style.display = "flex";
-    });
+  uploadBox.addEventListener("click", () => {
+    modal.style.display = "flex";
+  });
 
-    function proseguiScatto() {
-      const nome = document.getElementById("nome").value;
-      const cognome = document.getElementById("cognome").value;
-      const data = document.getElementById("dataNascita").value;
+  function proseguiScatto() {
+    const nome = document.getElementById("nome").value;
+    const cognome = document.getElementById("cognome").value;
+    const data = document.getElementById("dataNascita").value;
 
-      if (nome && cognome && data) {
-        modal.style.display = "none";
-        photoInput.click(); // apre la fotocamera
-      } else {
-        alert("Compila tutti i campi.");
-      }
+    if (nome && cognome && data) {
+      modal.style.display = "none";
+      photoInput.click(); // apre la fotocamera
+    } else {
+      alert("Compila tutti i campi.");
     }
-
-    photoInput.addEventListener("change", () => {
-      const file = photoInput.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-  // Mostra anteprima
-  preview.src = e.target.result;
-  preview.style.display = "block";
-  uploadText.style.display = "none";
-
-  // Prepara il payload
-  const formData = new FormData();
-  formData.append("file", file); // nome corretto richiesto da Flask
-
-  try {
-    const res = await fetch("https://ai.epidermys.com/analyze", {
-      method: "POST",
-      body: formData
-    });
-
-    const data = await res.json();
-    console.log("Risposta GPT-4o:", data);
-    alert("Risultato GPT:\n\n" + JSON.stringify(data, null, 2));
-
-    // Salvataggio locale
-    localStorage.setItem("imageData", e.target.result); // immagine base64
-    localStorage.setItem("gpt_output", JSON.stringify(data)); // JSON completo
-
-    // Vai alla pagina dei risultati
-    window.location.href = "risultati.html";
-  } catch (error) {
-    console.error("Errore:", error);
-    alert("Errore durante l'invio della foto");
   }
-};
-  </script>
+
+  photoInput.addEventListener("change", () => {
+    const file = photoInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        // Mostra anteprima
+        preview.src = e.target.result;
+        preview.style.display = "block";
+        uploadText.style.display = "none";
+
+        // Prepara il payload
+        const formData = new FormData();
+        formData.append("file", file); // deve essere "file", non "image"
+
+        try {
+          const res = await fetch("https://ai.epidermys.com/analyze", {
+            method: "POST",
+            body: formData
+          });
+
+          const data = await res.json();
+          console.log("Risposta GPT-4o:", data);
+          alert("Risultato GPT:\n\n" + JSON.stringify(data, null, 2));
+
+          // Salvataggio locale
+          localStorage.setItem("imageData", e.target.result);
+          localStorage.setItem("gpt_output", JSON.stringify(data));
+
+          // Vai alla pagina risultati
+          window.location.href = "risultati.html";
+
+        } catch (error) {
+          console.error("Errore:", error);
+          alert("Errore durante l'invio della foto");
+        }
+      };
+      reader.readAsDataURL(file); // 💡 questa mancava
+    }
+  });
+</script>
 
 </body>
 </html>
