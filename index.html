@@ -195,7 +195,7 @@
 
           // Prepara invio a GPT-4o
           const formData = new FormData();
-          formData.append("file", file);
+          formData.append("image", file);
 
           try {
             const res = await fetch("https://ai.epidermys.com/analyze", {
