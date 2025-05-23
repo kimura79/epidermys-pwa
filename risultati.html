@@ -1,0 +1,81 @@
+<!-- risultati.html -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risultati Analisi – Epidermys</title>
+  <style>
+    body {
+      font-family: "Helvetica", "Arial", sans-serif;
+      padding: 2em;
+      text-align: center;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .main-image {
+      width: 300px;
+      height: auto;
+      margin-bottom: 30px;
+      border: 2px solid #ccc;
+    }
+    .grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1fr;
+    }
+    .analysis-box {
+      background: white;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .analysis-box img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .label {
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    @media (min-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .analysis-box img {
+        aspect-ratio: 3 / 4;
+        object-fit: cover;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Risultati Analisi Viso</h1>
+  <img id="mainImage" class="main-image" alt="Foto Paziente">
+
+  <div class="grid">
+    <div class="analysis-box"><img src="images/overlay1.jpg"><div class="label">Spots</div></div>
+    <div class="analysis-box"><img src="images/overlay2.jpg"><div class="label">Wrinkles</div></div>
+    <div class="analysis-box"><img src="images/overlay3.jpg"><div class="label">Pores Density</div></div>
+    <div class="analysis-box"><img src="images/overlay4.jpg"><div class="label">Texture</div></div>
+    <div class="analysis-box"><img src="images/overlay5.jpg"><div class="label">Red Areas</div></div>
+    <div class="analysis-box"><img src="images/overlay6.jpg"><div class="label">Melasma</div></div>
+    <div class="analysis-box"><img src="images/overlay7.jpg"><div class="label">Pore Size</div></div>
+    <div class="analysis-box"><img src="images/overlay8.jpg"><div class="label">Skin Evenness</div></div>
+  </div>
+
+  <script>
+    const imgData = localStorage.getItem("imageData");
+    if (imgData) {
+      document.getElementById("mainImage").src = imgData;
+    } else {
+      alert("Nessuna immagine trovata. Torna alla pagina iniziale.");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
