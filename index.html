@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <style>
     body {
-      font-family: "Segoe UI", sans-serif;
+      font-family: Helvetica, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -16,6 +16,7 @@
       padding: 2em;
       background-color: #fff;
     }
+
     .upload-box {
       width: 300px;
       height: 400px;
@@ -26,18 +27,22 @@
       cursor: pointer;
       position: relative;
     }
+
     .upload-box span {
       font-size: 48px;
       color: #2261a9;
     }
+
     .search-section {
       margin-top: 40px;
       text-align: center;
     }
+
     .search-section h2 {
       font-size: 22px;
       margin-bottom: 8px;
     }
+
     .search-section input {
       padding: 10px;
       width: 250px;
@@ -47,6 +52,7 @@
       border-radius: 4px;
       margin-bottom: 12px;
     }
+
     .search-section button {
       background-color: #2261a9;
       color: #fff;
@@ -56,12 +62,32 @@
       border-radius: 4px;
       cursor: pointer;
     }
+
+    .auth-links {
+      font-size: 14px;
+      margin-top: 12px;
+    }
+
+    .auth-links a {
+      font-family: Helvetica, sans-serif;
+      color: #2261a9;
+      text-decoration: none;
+      margin: 0 6px;
+      transition: all 0.3s ease;
+    }
+
+    .auth-links a:hover {
+      text-decoration: underline;
+      color: #003f7d;
+    }
+
     #preview {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: none;
     }
+
     .modal {
       position: fixed;
       top: 0; left: 0;
@@ -73,6 +99,7 @@
       z-index: 999;
       display: none;
     }
+
     .modal-content {
       background: white;
       padding: 30px;
@@ -81,9 +108,11 @@
       max-width: 400px;
       text-align: center;
     }
+
     .modal-content h2 {
       margin-bottom: 20px;
     }
+
     .modal-content input {
       width: 100%;
       padding: 10px;
@@ -92,6 +121,7 @@
       border-radius: 4px;
       font-size: 16px;
     }
+
     .modal-content button {
       background-color: #2261a9;
       color: white;
@@ -116,8 +146,9 @@
     <input type="text" placeholder="Nome" id="nomePaziente">
     <br>
     <button onclick="alert('Funzione cerca non ancora implementata')">Cerca</button>
-    <br><br>
-    <a href="login.html">🔐 Login</a> | <a href="signup.html">➕ Registrati</a>
+    <div class="auth-links">
+      <a href="login.html">Login</a> | <a href="signup.html">Registrati</a>
+    </div>
   </div>
 
   <div class="modal" id="modal">
