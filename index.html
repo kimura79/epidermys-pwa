@@ -188,42 +188,36 @@
       if (file) {
         const reader = new FileReader();
         reader.onload = async (e) => {
-          // Anteprima
-          preview.src = e.target.result;
-          preview.style.display = "block";
-          uploadText.style.display = "none";
+  // Mostra anteprima
+  preview.src = e.target.result;
+  preview.style.display = "block";
+  uploadText.style.display = "none";
 
-          // Prepara invio a GPT-4o
-          const formData = new FormData();
-          formData.append("file", file);
+  // Prepara il payload
+  const formData = new FormData();
+  formData.append("file", file); // nome corretto richiesto da Flask
 
-          try {
-            const res = await fetch("https://ai.epidermys.com/analyze", {
-              method: "POST",
-              body: formData
-            });
-
-          const data = await res.json();
-console.log("Risposta GPT-4o:", data);
-alert("Risultato GPT:\n\n" + JSON.stringify(data, null, 2));
-
-localStorage.setItem("imageData", e.target.result);
-localStorage.setItem("gpt_output", JSON.stringify(data));
-
-            // Salva localmente (opzionale)
-            localStorage.setItem("imageData", e.target.result);
-
-            // Vai alla pagina risultati
-            window.location.href = "risultati.html";
-
-          } catch (error) {
-            console.error("Errore:", error);
-            alert("Errore durante l'invio della foto");
-          }
-        };
-        reader.readAsDataURL(file);
-      }
+  try {
+    const res = await fetch("https://ai.epidermys.com/analyze", {
+      method: "POST",
+      body: formData
     });
+
+    const data = await res.json();
+    console.log("Risposta GPT-4o:", data);
+    alert("Risultato GPT:\n\n" + JSON.stringify(data, null, 2));
+
+    // Salvataggio locale
+    localStorage.setItem("imageData", e.target.result); // immagine base64
+    localStorage.setItem("gpt_output", JSON.stringify(data)); // JSON completo
+
+    // Vai alla pagina dei risultati
+    window.location.href = "risultati.html";
+  } catch (error) {
+    console.error("Errore:", error);
+    alert("Errore durante l'invio della foto");
+  }
+};
   </script>
 
 </body>
