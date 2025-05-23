@@ -198,7 +198,7 @@
           formData.append("file", file);
 
           try {
-            const res = await fetch("http://92.48.104.187:8000/analizza_foto", {
+            const res = await fetch("https://ai.epidermys.com/analizza_foto", {
               method: "POST",
               body: formData
             });
