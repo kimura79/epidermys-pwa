@@ -73,26 +73,27 @@
       window.location.href = "index.html";
     }
 
-    // Recupera immagine e output da localStorage
     const foto = localStorage.getItem("imageData");
     const output = localStorage.getItem("gpt_output");
 
-    // Mostra immagine
     if (foto) {
       document.getElementById("foto").src = foto;
     }
 
-    // Mostra metadati GPT
     const container = document.getElementById("outputGPT");
     if (output) {
       try {
         const json = JSON.parse(output);
-        container.innerHTML = `
-          <p><strong>Genere:</strong> ${json.genere}</p>
-          <p><strong>Età stimata:</strong> ${json.età} anni</p>
-          <p><strong>Posa:</strong> ${json.posa}</p>
-          <p><strong>Fototipo:</strong> ${json.fototipo}</p>
-        `;
+        if (typeof json === 'object' && json !== null) {
+          container.innerHTML = `
+            <p><strong>Genere:</strong> ${json.genere}</p>
+            <p><strong>Età stimata:</strong> ${json.età} anni</p>
+            <p><strong>Posa:</strong> ${json.posa}</p>
+            <p><strong>Fototipo:</strong> ${json.fototipo}</p>
+          `;
+        } else {
+          container.innerHTML = `<pre>${output}</pre>`;
+        }
       } catch {
         container.innerHTML = `<pre>${output}</pre>`;
       }
