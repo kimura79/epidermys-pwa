@@ -203,9 +203,12 @@
               body: formData
             });
 
-            const data = await res.json();
-            console.log("Risposta GPT-4o:", data.output);
-            alert("Risultato GPT:\n\n" + data.output);
+          const data = await res.json();
+console.log("Risposta GPT-4o:", data);
+alert("Risultato GPT:\n\n" + JSON.stringify(data, null, 2));
+
+localStorage.setItem("imageData", e.target.result);
+localStorage.setItem("gpt_output", JSON.stringify(data));
 
             // Salva localmente (opzionale)
             localStorage.setItem("imageData", e.target.result);
