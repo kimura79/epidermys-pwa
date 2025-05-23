@@ -1,9 +1,0 @@
-{
-  "name": "Epidermys",
-  "short_name": "Epidermys",
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "description": "Scatta una foto e ottieni l'analisi dermatologica",
-  "icons": []
-}
