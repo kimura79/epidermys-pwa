@@ -1,4 +1,3 @@
-<!-- risultati.html -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -7,75 +6,100 @@
   <title>Risultati Analisi – Epidermys</title>
   <style>
     body {
-      font-family: "Helvetica", "Arial", sans-serif;
-      padding: 2em;
+      font-family: Helvetica, sans-serif;
       text-align: center;
-      background-color: #f9f9f9;
+      padding: 2em;
+      background-color: #fff;
     }
+
     h1 {
-      margin-bottom: 20px;
+      color: #2261a9;
+      margin-bottom: 10px;
     }
-    .main-image {
-      width: 300px;
-      height: auto;
-      margin-bottom: 30px;
+
+    .foto {
+      width: 90%;
+      max-width: 300px;
+      margin: 20px auto;
       border: 2px solid #ccc;
+      border-radius: 8px;
     }
-    .grid {
-      display: grid;
-      gap: 20px;
-      grid-template-columns: 1fr;
+
+    .metadati {
+      text-align: left;
+      max-width: 400px;
+      margin: 0 auto;
+      font-size: 18px;
+      line-height: 1.6;
+      background-color: #f2f2f2;
+      padding: 20px;
+      border-radius: 10px;
     }
-    .analysis-box {
-      background: white;
-      border: 1px solid #ddd;
-      padding: 10px;
-      border-radius: 6px;
+
+    .metadati strong {
+      color: #2261a9;
     }
-    .analysis-box img {
-      width: 100%;
-      height: auto;
-      border-radius: 4px;
+
+    .btn {
+      margin-top: 30px;
+      background-color: #2261a9;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
     }
-    .label {
-      margin-top: 8px;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    @media (min-width: 768px) {
-      .grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-      .analysis-box img {
-        aspect-ratio: 3 / 4;
-        object-fit: cover;
-      }
+
+    .btn:hover {
+      background-color: #003f7d;
     }
   </style>
 </head>
 <body>
-  <h1>Risultati Analisi Viso</h1>
-  <img id="mainImage" class="main-image" alt="Foto Paziente">
 
-  <div class="grid">
-    <div class="analysis-box"><img src="images/overlay1.jpg"><div class="label">Spots</div></div>
-    <div class="analysis-box"><img src="images/overlay2.jpg"><div class="label">Wrinkles</div></div>
-    <div class="analysis-box"><img src="images/overlay3.jpg"><div class="label">Pores Density</div></div>
-    <div class="analysis-box"><img src="images/overlay4.jpg"><div class="label">Texture</div></div>
-    <div class="analysis-box"><img src="images/overlay5.jpg"><div class="label">Red Areas</div></div>
-    <div class="analysis-box"><img src="images/overlay6.jpg"><div class="label">Melasma</div></div>
-    <div class="analysis-box"><img src="images/overlay7.jpg"><div class="label">Pore Size</div></div>
-    <div class="analysis-box"><img src="images/overlay8.jpg"><div class="label">Skin Evenness</div></div>
+  <h1>Risultato Analisi Visiva</h1>
+
+  <img id="foto" class="foto" src="#" alt="Foto caricata">
+
+  <div class="metadati" id="outputGPT">
+    <p>Caricamento...</p>
   </div>
 
+  <button class="btn" onclick="tornaHome()">Torna alla Home</button>
+
   <script>
-    const imgData = localStorage.getItem("imageData");
-    if (imgData) {
-      document.getElementById("mainImage").src = imgData;
-    } else {
-      alert("Nessuna immagine trovata. Torna alla pagina iniziale.");
+    function tornaHome() {
       window.location.href = "index.html";
     }
+
+    // Recupera immagine e output da localStorage
+    const foto = localStorage.getItem("imageData");
+    const output = localStorage.getItem("gpt_output");
+
+    // Mostra immagine
+    if (foto) {
+      document.getElementById("foto").src = foto;
+    }
+
+    // Mostra metadati GPT
+    const container = document.getElementById("outputGPT");
+    if (output) {
+      try {
+        const json = JSON.parse(output);
+        container.innerHTML = `
+          <p><strong>Genere:</strong> ${json.genere}</p>
+          <p><strong>Età stimata:</strong> ${json.età} anni</p>
+          <p><strong>Posa:</strong> ${json.posa}</p>
+          <p><strong>Fototipo:</strong> ${json.fototipo}</p>
+        `;
+      } catch {
+        container.innerHTML = `<pre>${output}</pre>`;
+      }
+    } else {
+      container.innerHTML = "<p>Nessun dato disponibile.</p>";
+    }
   </script>
+
 </body>
 </html>
