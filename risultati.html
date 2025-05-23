@@ -28,7 +28,7 @@
     .metadati {
       text-align: left;
       max-width: 400px;
-      margin: 0 auto;
+      margin: 20px auto;
       font-size: 18px;
       line-height: 1.6;
       background-color: #f2f2f2;
@@ -54,6 +54,35 @@
     .btn:hover {
       background-color: #003f7d;
     }
+
+    .overlay-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .overlay-box {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 8px;
+      background: #fff;
+    }
+
+    .overlay-box img {
+      width: 100%;
+      border-radius: 6px;
+    }
+
+    .overlay-label {
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 5px;
+      color: #333;
+    }
   </style>
 </head>
 <body>
@@ -65,6 +94,8 @@
   <div class="metadati" id="outputGPT">
     <p>Caricamento...</p>
   </div>
+
+  <div class="overlay-grid" id="overlayContainer"></div>
 
   <button class="btn" onclick="tornaHome()">Torna alla Home</button>
 
@@ -81,9 +112,12 @@
     }
 
     const container = document.getElementById("outputGPT");
+    const overlayContainer = document.getElementById("overlayContainer");
+
     if (output) {
       try {
         const json = JSON.parse(output);
+
         if (typeof json === 'object' && json !== null) {
           container.innerHTML = `
             <p><strong>Genere:</strong> ${json.genere}</p>
@@ -91,6 +125,21 @@
             <p><strong>Posa:</strong> ${json.posa}</p>
             <p><strong>Fototipo:</strong> ${json.fototipo}</p>
           `;
+
+          // Overlays
+          if (json.overlays && typeof json.overlays === 'object') {
+            overlayContainer.innerHTML = '';
+            for (const key in json.overlays) {
+              const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+              const url = json.overlays[key];
+              overlayContainer.innerHTML += `
+                <div class="overlay-box">
+                  <img src="${url}" alt="${label}">
+                  <div class="overlay-label">${label}</div>
+                </div>
+              `;
+            }
+          }
         } else {
           container.innerHTML = `<pre>${output}</pre>`;
         }
