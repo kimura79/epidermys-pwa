@@ -97,8 +97,8 @@
     let dataNascitaGlobale = "";
 
     function checkForm() {
-      const nome = document.getElementById("nome").value;
-      const cognome = document.getElementById("cognome").value;
+      const nome = document.getElementById("nome").value.trim();
+      const cognome = document.getElementById("cognome").value.trim();
       const data = document.getElementById("dataNascita").value;
 
       if (!nome || !cognome || !data) {
@@ -146,8 +146,11 @@
           });
 
           const result = await response.json();
-          console.log("Risultato:", result);
-          localStorage.setItem("gpt_output", JSON.stringify(result.output));
+          console.log("Risposta RunPod:", result);
+
+          // fallback: se non c'è "output" lo salva comunque
+          const outputData = result.output || result;
+          localStorage.setItem("gpt_output", JSON.stringify(outputData));
           window.location.href = "risultati.html";
 
         } catch (err) {
