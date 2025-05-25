@@ -27,7 +27,7 @@
 
     .metadati {
       text-align: left;
-      max-width: 400px;
+      max-width: 500px;
       margin: 20px auto;
       font-size: 18px;
       line-height: 1.6;
@@ -89,6 +89,20 @@
       font-weight: bold;
       margin-bottom: 1rem;
     }
+
+    .debug-box {
+      margin-top: 2rem;
+      text-align: left;
+      background: #eee;
+      color: #000;
+      font-size: 14px;
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
@@ -103,6 +117,8 @@
 
   <div class="overlay-grid" id="overlayContainer"></div>
 
+  <div class="debug-box" id="debugBox" style="display: none;"></div>
+
   <button class="btn" onclick="tornaHome()">Torna alla Home</button>
 
   <script>
@@ -114,6 +130,7 @@
     const output = localStorage.getItem("gpt_output");
     const container = document.getElementById("outputGPT");
     const overlayContainer = document.getElementById("overlayContainer");
+    const debugBox = document.getElementById("debugBox");
 
     if (foto) {
       document.getElementById("foto").src = foto;
@@ -125,7 +142,6 @@
         const json = parsed.output && typeof parsed.output === 'object' ? parsed.output : parsed;
 
         let html = "";
-
         if (json.età !== undefined) html += `<p><strong>Età:</strong> ${json.età} anni</p>`;
         if (json.posa) html += `<p><strong>Posa:</strong> ${json.posa}</p>`;
         if (json.fototipo) html += `<p><strong>Fototipo:</strong> ${json.fototipo}</p>`;
@@ -148,11 +164,9 @@
         }
 
       } catch (err) {
-        console.error("Errore parsing JSON:", err);
-        container.innerHTML = `
-          <div class="errore">Errore durante il parsing dei dati</div>
-          <pre>${output}</pre>
-        `;
+        container.innerHTML = `<p class="errore">Errore durante il parsing dei dati</p><pre>undefined</pre>`;
+        debugBox.style.display = "block";
+        debugBox.innerText = `Errore JS: ${err.message}\n\nContenuto grezzo ricevuto:\n${output}`;
       }
     } else {
       container.innerHTML = "<p>Nessun dato disponibile.</p>";
