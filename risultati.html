@@ -27,8 +27,8 @@
 
     .metadati {
       text-align: left;
-      max-width: 500px;
-      margin: 20px auto;
+      max-width: 400px;
+      margin: 0 auto;
       font-size: 18px;
       line-height: 1.6;
       background-color: #f2f2f2;
@@ -90,18 +90,22 @@
       margin-bottom: 1rem;
     }
 
-    .debug-box {
-      margin-top: 2rem;
-      text-align: left;
+    details {
       background: #eee;
-      color: #000;
-      font-size: 14px;
-      padding: 15px;
-      border-radius: 10px;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-      white-space: pre-wrap;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 5px;
+      text-align: left;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    pre {
+      font-size: 13px;
+      overflow-x: auto;
     }
   </style>
 </head>
@@ -117,8 +121,6 @@
 
   <div class="overlay-grid" id="overlayContainer"></div>
 
-  <div class="debug-box" id="debugBox" style="display: none;"></div>
-
   <button class="btn" onclick="tornaHome()">Torna alla Home</button>
 
   <script>
@@ -128,20 +130,24 @@
 
     const foto = localStorage.getItem("imageData");
     const output = localStorage.getItem("gpt_output");
-    const container = document.getElementById("outputGPT");
-    const overlayContainer = document.getElementById("overlayContainer");
-    const debugBox = document.getElementById("debugBox");
 
     if (foto) {
       document.getElementById("foto").src = foto;
     }
 
+    const container = document.getElementById("outputGPT");
+    const overlayContainer = document.getElementById("overlayContainer");
+
     if (output) {
       try {
         const parsed = JSON.parse(output);
-        const json = parsed.output && typeof parsed.output === 'object' ? parsed.output : parsed;
+        const json = parsed.output || parsed;
 
         let html = "";
+
+        // Sezione DEBUG JSON
+        html += `<details><summary>DEBUG JSON</summary><pre>${JSON.stringify(parsed, null, 2)}</pre></details>`;
+
         if (json.età !== undefined) html += `<p><strong>Età:</strong> ${json.età} anni</p>`;
         if (json.posa) html += `<p><strong>Posa:</strong> ${json.posa}</p>`;
         if (json.fototipo) html += `<p><strong>Fototipo:</strong> ${json.fototipo}</p>`;
@@ -164,9 +170,8 @@
         }
 
       } catch (err) {
-        container.innerHTML = `<p class="errore">Errore durante il parsing dei dati</p><pre>undefined</pre>`;
-        debugBox.style.display = "block";
-        debugBox.innerText = `Errore JS: ${err.message}\n\nContenuto grezzo ricevuto:\n${output}`;
+        console.error("Errore di parsing:", err);
+        container.innerHTML = `<p class="errore">Errore nel parsing dei dati</p><pre>${output}</pre>`;
       }
     } else {
       container.innerHTML = "<p>Nessun dato disponibile.</p>";
