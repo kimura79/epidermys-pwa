@@ -11,10 +11,12 @@
       padding: 2em;
       background-color: #fff;
     }
+
     h1 {
       color: #2261a9;
       margin-bottom: 10px;
     }
+
     .foto {
       width: 90%;
       max-width: 300px;
@@ -22,6 +24,7 @@
       border: 2px solid #ccc;
       border-radius: 8px;
     }
+
     .metadati {
       text-align: left;
       max-width: 400px;
@@ -32,9 +35,11 @@
       padding: 20px;
       border-radius: 10px;
     }
+
     .metadati strong {
       color: #2261a9;
     }
+
     .btn {
       margin-top: 30px;
       background-color: #2261a9;
@@ -45,9 +50,11 @@
       font-size: 16px;
       cursor: pointer;
     }
+
     .btn:hover {
       background-color: #003f7d;
     }
+
     .overlay-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -57,27 +64,37 @@
       margin-left: auto;
       margin-right: auto;
     }
+
     .overlay-box {
       border: 1px solid #ddd;
       border-radius: 8px;
       padding: 8px;
       background: #fff;
     }
+
     .overlay-box img {
       width: 100%;
       border-radius: 6px;
     }
+
     .overlay-label {
       font-size: 14px;
       font-weight: bold;
       margin-top: 5px;
       color: #333;
     }
+
+    .errore {
+      color: red;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
   </style>
 </head>
 <body>
 
   <h1>Risultato Analisi Visiva</h1>
+
   <img id="foto" class="foto" src="#" alt="Foto caricata">
 
   <div class="metadati" id="outputGPT">
@@ -94,24 +111,27 @@
     }
 
     const foto = localStorage.getItem("imageData");
-    if (foto) document.getElementById("foto").src = foto;
-
     const output = localStorage.getItem("gpt_output");
+
+    if (foto) {
+      document.getElementById("foto").src = foto;
+    }
+
     const container = document.getElementById("outputGPT");
     const overlayContainer = document.getElementById("overlayContainer");
 
     if (output) {
-      let json;
       try {
-        json = JSON.parse(output);
-        if (typeof json !== 'object' || json === null) throw new Error("Non è un oggetto valido");
+        const parsed = JSON.parse(output);
+        const json = parsed.output || parsed;
 
         let html = "";
-        html += `<p><strong>Età:</strong> ${json.età ?? '-'}</p>`;
-        html += `<p><strong>Posa:</strong> ${json.posa ?? '-'}</p>`;
-        html += `<p><strong>Fototipo:</strong> ${json.fototipo ?? '-'}</p>`;
-        html += `<p><strong>L* medio:</strong> ${json["L* medio"] ?? '-'}</p>`;
-        container.innerHTML = html;
+        if (json.età !== undefined) html += `<p><strong>Età:</strong> ${json.età} anni</p>`;
+        if (json.posa) html += `<p><strong>Posa:</strong> ${json.posa}</p>`;
+        if (json.fototipo) html += `<p><strong>Fototipo:</strong> ${json.fototipo}</p>`;
+        if (json["L* medio"] !== undefined) html += `<p><strong>L* medio:</strong> ${json["L* medio"]}</p>`;
+
+        container.innerHTML = html || "<p>Nessun dato disponibile.</p>";
 
         if (json.overlays && typeof json.overlays === 'object') {
           overlayContainer.innerHTML = '';
@@ -126,9 +146,10 @@
             `;
           }
         }
+
       } catch (err) {
-        container.innerHTML = `<p style="color:red;">Errore durante il parsing dei dati</p><pre>${output}</pre>`;
-        console.error("Errore JSON:", err);
+        console.error("Errore di parsing:", err);
+        container.innerHTML = `<p class="errore">Errore durante il parsing dei dati</p><pre>${output}</pre>`;
       }
     } else {
       container.innerHTML = "<p>Nessun dato disponibile.</p>";
