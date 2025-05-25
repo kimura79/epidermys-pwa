@@ -117,32 +117,37 @@
     if (output) {
       try {
         const json = JSON.parse(output);
+        let html = "";
 
-        if (typeof json === 'object' && json !== null) {
-          container.innerHTML = `
-            <p><strong>Genere:</strong> ${json.genere}</p>
-            <p><strong>Età stimata:</strong> ${json.età} anni</p>
-            <p><strong>Posa:</strong> ${json.posa}</p>
-            <p><strong>Fototipo:</strong> ${json.fototipo}</p>
-          `;
-
-          // Overlays
-          if (json.overlays && typeof json.overlays === 'object') {
-            overlayContainer.innerHTML = '';
-            for (const key in json.overlays) {
-              const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-              const url = json.overlays[key];
-              overlayContainer.innerHTML += `
-                <div class="overlay-box">
-                  <img src="${url}" alt="${label}">
-                  <div class="overlay-label">${label}</div>
-                </div>
-              `;
-            }
-          }
-        } else {
-          container.innerHTML = `<pre>${output}</pre>`;
+        if (json.età !== undefined) {
+          html += `<p><strong>Età:</strong> ${json.età} anni</p>`;
         }
+        if (json.posa) {
+          html += `<p><strong>Posa:</strong> ${json.posa}</p>`;
+        }
+        if (json.fototipo) {
+          html += `<p><strong>Fototipo:</strong> ${json.fototipo}</p>`;
+        }
+        if (json["L* medio"] !== undefined) {
+          html += `<p><strong>L* medio:</strong> ${json["L* medio"]}</p>`;
+        }
+
+        container.innerHTML = html;
+
+        if (json.overlays && typeof json.overlays === 'object') {
+          overlayContainer.innerHTML = '';
+          for (const key in json.overlays) {
+            const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const url = json.overlays[key];
+            overlayContainer.innerHTML += `
+              <div class="overlay-box">
+                <img src="${url}" alt="${label}">
+                <div class="overlay-label">${label}</div>
+              </div>
+            `;
+          }
+        }
+
       } catch {
         container.innerHTML = `<pre>${output}</pre>`;
       }
