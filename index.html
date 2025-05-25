@@ -15,7 +15,6 @@
       padding: 2em;
       background-color: #fff;
     }
-
     .upload-box {
       width: 300px;
       height: 400px;
@@ -26,22 +25,18 @@
       cursor: pointer;
       position: relative;
     }
-
     .upload-box span {
       font-size: 48px;
       color: #2261a9;
     }
-
     .search-section {
       margin-top: 40px;
       text-align: center;
     }
-
     .search-section h2 {
       font-size: 22px;
       margin-bottom: 8px;
     }
-
     .search-section input {
       padding: 10px;
       width: 250px;
@@ -51,7 +46,6 @@
       border-radius: 4px;
       margin-bottom: 12px;
     }
-
     .search-section button {
       background-color: #2261a9;
       color: #fff;
@@ -61,30 +55,25 @@
       border-radius: 4px;
       cursor: pointer;
     }
-
     .auth-links {
       font-size: 14px;
       margin-top: 30px;
     }
-
     .auth-links a {
       color: #2261a9;
       text-decoration: none;
       margin: 0 6px;
     }
-
     .auth-links a:hover {
       text-decoration: underline;
       color: #003f7d;
     }
-
     #preview {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: none;
     }
-
     .modal {
       position: fixed;
       top: 0; left: 0;
@@ -96,7 +85,6 @@
       z-index: 999;
       display: none;
     }
-
     .modal-content {
       background: white;
       padding: 30px;
@@ -105,11 +93,9 @@
       max-width: 400px;
       text-align: center;
     }
-
     .modal-content h2 {
       margin-bottom: 20px;
     }
-
     .modal-content input {
       width: 100%;
       padding: 10px;
@@ -118,7 +104,6 @@
       border-radius: 4px;
       font-size: 16px;
     }
-
     .modal-content button {
       background-color: #2261a9;
       color: white;
@@ -177,53 +162,49 @@
 
       if (nome && cognome && data) {
         modal.style.display = "none";
+        photoInput.dataset.dataNascita = data;
         photoInput.click();
       } else {
         alert("Compila tutti i campi.");
       }
     }
 
-    async function analizzaFotoConReplicate(base64Image) {
-      const replicateToken = 'r8_C1O3onQYRv7lQaDLf9aHL0eNifFzz7A1peeSd';
-      const endpoint = 'https://api.replicate.com/v1/predictions';
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Authorization": `Token ${replicateToken}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          version: "latest",
-          input: {
-            image: base64Image
-          }
-        })
-      });
-
-      const result = await response.json();
-      console.log("Risultato:", result);
-
-      if (result && result.output) {
-        localStorage.setItem("gpt_output", JSON.stringify(result.output));
-        window.location.href = "risultati.html";
-      } else {
-        alert("Errore: risposta non valida da Replicate.");
-      }
-    }
-
     photoInput.addEventListener("change", () => {
       const file = photoInput.files[0];
-      if (file) {
+      const dataNascita = photoInput.dataset.dataNascita;
+
+      if (file && dataNascita) {
         const reader = new FileReader();
         reader.onload = async (e) => {
           const base64 = e.target.result;
           preview.src = base64;
           preview.style.display = "block";
           uploadText.style.display = "none";
-
           localStorage.setItem("imageData", base64);
-          await analizzaFotoConReplicate(base64);
+
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("dob", dataNascita);
+
+          try {
+            const response = await fetch("https://api.runpod.ai/v2/ahg0x5524vckko/run", {
+              method: "POST",
+              headers: {
+                "Authorization": "Bearer rpa_3UNKUYI2O8D2VQR76ZP8N3OM1FR6ZN7Q55DVEVFI1lo8ytrpa_3UNKUYI2O8D2VQR76ZP8N3OM1FR6ZN7Q55DVEVFI1lo8yt" // ← inserisci qui il tuo token personale
+              },
+              body: formData
+            });
+
+            const result = await response.json();
+            console.log("Risultato:", result);
+
+            localStorage.setItem("gpt_output", JSON.stringify(result.output));
+            window.location.href = "risultati.html";
+
+          } catch (err) {
+            console.error("Errore invio:", err);
+            alert("Errore durante l'invio dell'immagine.");
+          }
         };
         reader.readAsDataURL(file);
       }
