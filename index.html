@@ -14,6 +14,7 @@
     .form-section input { width: 100%; padding: 10px; margin-bottom: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc; }
     .foto-section button { width: 100%; padding: 12px; margin-bottom: 10px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer; background-color: #2261a9; color: white; }
     .foto-section button:hover { background-color: #003f7d; }
+    .attesa { font-size: 16px; color: #444; margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -66,7 +67,7 @@
       if (checkForm()) inputGallery.click();
     }
 
-    async function pollJobResult(jobId, retries = 20) {
+    async function pollJobResult(jobId, retries = 60) {
       const apiKey = "rpa_3UNKUYI2O8D2VQR76ZP8N3OM1FR6ZN7Q55DVEVFI1lo8yt";
       const pollUrl = `https://api.runpod.ai/v2/ahg0x5524vckko/status/${jobId}`;
       for (let i = 0; i < retries; i++) {
@@ -74,12 +75,12 @@
           headers: { "Authorization": `Bearer ${apiKey}` }
         });
         const json = await res.json();
-        if (json.status === "COMPLETED") {
-          return json.output;
-        }
+        console.log("Polling status:", json);
+        if (json.status === "COMPLETED") return json.output;
+        if (json.status === "FAILED") throw new Error("Job fallito su RunPod");
         await new Promise(r => setTimeout(r, 2000));
       }
-      throw new Error("Timeout attesa risultato da RunPod");
+      throw new Error("Timeout: nessuna risposta da RunPod");
     }
 
     function gestisciFile(file) {
@@ -91,6 +92,13 @@
         preview.style.display = "block";
         uploadText.style.display = "none";
         localStorage.setItem("imageData", base64Full);
+
+        // Mostra messaggio di attesa
+        const msg = document.createElement("p");
+        msg.id = "attesa";
+        msg.className = "attesa";
+        msg.innerText = "Elaborazione in corso, attendi...";
+        document.body.appendChild(msg);
 
         const payload = {
           input: {
@@ -112,9 +120,12 @@
           const job = await response.json();
           const output = await pollJobResult(job.id);
           localStorage.setItem("gpt_output", JSON.stringify(output));
+          document.getElementById("attesa")?.remove();
           window.location.href = "risultati.html";
+
         } catch (err) {
           console.error("Errore durante analisi:", err);
+          document.getElementById("attesa")?.remove();
           alert("Errore durante l'elaborazione dell'immagine.");
         }
       };
