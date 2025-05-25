@@ -176,23 +176,29 @@
       if (file && dataNascita) {
         const reader = new FileReader();
         reader.onload = async (e) => {
-          const base64 = e.target.result;
-          preview.src = base64;
+          const base64Full = e.target.result;
+          const base64Only = base64Full.split(",")[1];
+
+          preview.src = base64Full;
           preview.style.display = "block";
           uploadText.style.display = "none";
-          localStorage.setItem("imageData", base64);
+          localStorage.setItem("imageData", base64Full);
 
-          const formData = new FormData();
-          formData.append("file", file);
-          formData.append("dob", dataNascita);
+          const payload = {
+            input: {
+              image_base64: base64Only,
+              data_nascita: dataNascita
+            }
+          };
 
           try {
             const response = await fetch("https://api.runpod.ai/v2/ahg0x5524vckko/run", {
               method: "POST",
               headers: {
-                "Authorization": "Bearer rpa_3UNKUYI2O8D2VQR76ZP8N3OM1FR6ZN7Q55DVEVFI1lo8ytrpa_3UNKUYI2O8D2VQR76ZP8N3OM1FR6ZN7Q55DVEVFI1lo8yt" // ← inserisci qui il tuo token personale
+                "Content-Type": "application/json",
+                "Authorization": "Bearer rpa_3UNKUYI2O8D2VQR76ZP8N3OM1FR6ZN7Q55DVEVFI1lo8yt"
               },
-              body: formData
+              body: JSON.stringify(payload)
             });
 
             const result = await response.json();
