@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Risultati Analisi – Epidermys</title>
   <style>
     body {
@@ -95,7 +95,7 @@
 
   <h1>Risultato Analisi Visiva</h1>
 
-  <img id="foto" class="foto" src="#" alt="Foto caricata">
+  <img id="foto" class="foto" src="#" alt="Foto caricata" />
 
   <div class="metadati" id="outputGPT">
     <p>Caricamento...</p>
@@ -112,20 +112,20 @@
 
     const foto = localStorage.getItem("imageData");
     const output = localStorage.getItem("gpt_output");
+    const container = document.getElementById("outputGPT");
+    const overlayContainer = document.getElementById("overlayContainer");
 
     if (foto) {
       document.getElementById("foto").src = foto;
     }
 
-    const container = document.getElementById("outputGPT");
-    const overlayContainer = document.getElementById("overlayContainer");
-
     if (output) {
       try {
         const parsed = JSON.parse(output);
-        const json = parsed.output || parsed;
+        const json = parsed.output && typeof parsed.output === 'object' ? parsed.output : parsed;
 
         let html = "";
+
         if (json.età !== undefined) html += `<p><strong>Età:</strong> ${json.età} anni</p>`;
         if (json.posa) html += `<p><strong>Posa:</strong> ${json.posa}</p>`;
         if (json.fototipo) html += `<p><strong>Fototipo:</strong> ${json.fototipo}</p>`;
@@ -148,8 +148,11 @@
         }
 
       } catch (err) {
-        console.error("Errore di parsing:", err);
-        container.innerHTML = `<p class="errore">Errore durante il parsing dei dati</p><pre>${output}</pre>`;
+        console.error("Errore parsing JSON:", err);
+        container.innerHTML = `
+          <div class="errore">Errore durante il parsing dei dati</div>
+          <pre>${output}</pre>
+        `;
       }
     } else {
       container.innerHTML = "<p>Nessun dato disponibile.</p>";
