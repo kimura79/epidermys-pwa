@@ -1,37 +1,87 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Risultato Analisi</title>
+  <style>
+    body {
+      font-family: Helvetica, sans-serif;
+      padding: 2em;
+      background-color: #fff;
+    }
+    h1 {
+      color: #222;
+    }
+    #overlay {
+      max-width: 100%;
+      border: 2px solid #ccc;
+      margin-top: 20px;
+    }
+    #dati {
+      margin-top: 30px;
+      padding: 1em;
+      background-color: #f8f8f8;
+      border: 1px solid #ccc;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+    .error {
+      color: darkred;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <h1>Risultato Analisi Dermatologica</h1>
-  <img id="overlayImg" src="#" alt="Overlay" style="max-width:100%;border:2px solid #ccc;" />
-  <pre id="dati"></pre>
+  <div id="contenuto"></div>
 
   <script>
-    // File originale caricato (es: foto_1716812958123.jpg)
-    const originalFileId = localStorage.getItem("lastFileId");
+    const fileId = localStorage.getItem("lastFileId");
+    const resultsFolder = "Epidermys_Results"; // Solo visivo, non usato direttamente
 
-    // Rimuove estensione se presente
-    const baseName = originalFileId?.replace(/\\.jpg|\\.png/, '');
+    if (!fileId) {
+      document.getElementById("contenuto").innerHTML = "<p class='error'>❌ Nessun file trovato. Torna alla home e scatta una foto.</p>";
+    } else {
+      const overlayUrl = `https://drive.google.com/uc?id=${fileId}&export=download`;
+      const txtUrl = `https://drive.google.com/uc?id=${fileId.replace("overlay.png", "dati.txt")}`;
 
-    // Costruisce i link pubblici su Google Drive (serve che i file siano condivisi)
-    const overlayUrl = `https://drive.google.com/uc?export=view&id=${baseName}_overlay`;
-    const dataUrl = `https://drive.google.com/uc?export=download&id=${baseName}_dati`;
+      // Mostra immagine overlay
+      const img = document.createElement("img");
+      img.src = overlayUrl;
+      img.alt = "Overlay";
+      img.id = "overlay";
+      document.getElementById("contenuto").appendChild(img);
 
-    // Mostra l’immagine overlay
-    document.getElementById("overlayImg").src = overlayUrl;
-
-    // Carica i dati dell’analisi
-    fetch(dataUrl)
-      .then(res => res.text())
-      .then(text => {
-        document.getElementById("dati").innerText = text;
-      })
-      .catch(() => {
-        document.getElementById("dati").innerText = "❌ Dati non trovati";
-      });
+      // Scarica dati .txt (solo se presente)
+      fetch(`https://www.googleapis.com/drive/v3/files?q=name+contains+'dati.txt'&fields=files(id,name)&key=AIzaSyDVID4DMYceBmam9oYzNRzAbtq0hr_79Nk`)
+        .then(resp => resp.json())
+        .then(data => {
+          const txtFile = data.files?.[0];
+          if (txtFile) {
+            fetch(`https://drive.google.com/uc?id=${txtFile.id}`)
+              .then(res => res.text())
+              .then(text => {
+                const div = document.createElement("div");
+                div.id = "dati";
+                div.textContent = text;
+                document.getElementById("contenuto").appendChild(div);
+              });
+          } else {
+            const error = document.createElement("p");
+            error.textContent = "❌ Dati non trovati";
+            error.className = "error";
+            document.getElementById("contenuto").appendChild(error);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          const error = document.createElement("p");
+          error.textContent = "❌ Errore nel recupero dati";
+          error.className = "error";
+          document.getElementById("contenuto").appendChild(error);
+        });
+    }
   </script>
 </body>
 </html>
