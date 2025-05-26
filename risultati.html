@@ -30,13 +30,6 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    .link-box {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #444;
-      word-break: break-all;
-    }
-
     .back-button {
       margin-top: 30px;
       display: inline-block;
@@ -55,25 +48,21 @@
 <body>
 
   <h1>Analisi completata</h1>
-  <p>Qui sotto trovi il risultato visivo con l’overlay generato:</p>
+  <p>Qui sotto trovi il risultato visivo con l’overlay generato dalla GPU:</p>
 
   <img id="overlay-result" src="" alt="Risultato Analisi">
-
-  <div class="link-box" id="linkBox"></div>
 
   <a href="index.html" class="back-button">Torna alla Home</a>
 
   <script>
-    const url = localStorage.getItem("overlay_link");
+    const url = localStorage.getItem("overlay_url");
     const img = document.getElementById("overlay-result");
-    const linkBox = document.getElementById("linkBox");
 
     if (url) {
       img.src = url;
-      linkBox.innerHTML = `Link Google Drive: <br><a href="${url}" target="_blank">${url}</a>`;
     } else {
       img.style.display = "none";
-      linkBox.textContent = "⚠️ Nessun link disponibile. Torna alla home e ripeti l’analisi.";
+      document.body.insertAdjacentHTML('beforeend', '<p style="color: red;">⚠️ Nessun risultato disponibile. Torna alla home e ripeti l’analisi.</p>');
     }
   </script>
 
