@@ -42,7 +42,7 @@
       border-radius: 4px;
       font-size: 16px;
       margin-top: 20px;
-      display: none;
+      display: block;
       cursor: pointer;
     }
   </style>
@@ -62,47 +62,48 @@
     const photoInput = document.getElementById("photoInput");
     const preview = document.getElementById("preview");
     const uploadText = document.getElementById("uploadText");
-    const scattaBtn = document.getElementById("scattaBtn");
 
     uploadBox.addEventListener("click", () => {
       photoInput.click();
     });
 
     photoInput.addEventListener("change", async () => {
-  const file = photoInput.files[0];
-  if (!file || !accessToken) return;
+      const file = photoInput.files[0];
+      if (!file) return;
 
-  const reader = new FileReader();
-  reader.onloadend = async () => {
-    preview.src = reader.result;
-    preview.style.display = "block";
-    uploadText.style.display = "none";
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        preview.src = reader.result;
+        preview.style.display = "block";
+        uploadText.style.display = "none";
 
-    try {
-      const formData = new FormData();
-      formData.append("image", file);
+        try {
+          const formData = new FormData();
+          formData.append("image", file);
 
-      const response = await fetch("https://4976-203-57-40-162.ngrok-free.app/analyze", {
-        method: "POST",
-        body: formData
-      });
+          const response = await fetch("https://4976-203-57-40-162.ngrok-free.app/analyze", {
+            method: "POST",
+            body: formData
+          });
 
-      const result = await response.json();
-      console.log("🟢 Risultato ricevuto:", result);
+          if (!response.ok) throw new Error("Errore server: " + response.status);
+          const result = await response.json();
 
-      localStorage.setItem("overlay_base64", result.overlay_base64);
-      window.location.href = "risultati.html";
+          if (result.overlay_base64) {
+            console.log("🟢 Risultato ricevuto:", result);
+            localStorage.setItem("overlay_base64", result.overlay_base64);
+            window.location.href = "risultati.html";
+          } else {
+            throw new Error("Risposta JSON mancante");
+          }
+        } catch (error) {
+          console.error("❌ Errore durante l’analisi:", error);
+          alert("Errore durante l’analisi: " + error.message);
+        }
+      };
 
-    } catch (error) {
-      console.error("❌ Errore durante la chiamata:", error);
-      alert("Errore durante l’analisi: " + error.message);
-    }
-  };
-
-  reader.readAsDataURL(file);
-});
-
-
+      reader.readAsDataURL(file);
+    });
   </script>
 </body>
 </html>
