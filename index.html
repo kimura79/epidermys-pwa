@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -63,15 +62,12 @@
       margin-top: 12px;
     }
     .auth-links a {
-      font-family: Helvetica, sans-serif;
       color: #2261a9;
       text-decoration: none;
       margin: 0 6px;
-      transition: all 0.3s ease;
     }
     .auth-links a:hover {
       text-decoration: underline;
-      color: #003f7d;
     }
     #preview {
       width: 100%;
@@ -88,7 +84,6 @@
       align-items: center;
       justify-content: center;
       z-index: 999;
-      display: none;
     }
     .modal-content {
       background: white;
@@ -97,9 +92,6 @@
       width: 90%;
       max-width: 400px;
       text-align: center;
-    }
-    .modal-content h2 {
-      margin-bottom: 20px;
     }
     .modal-content input {
       width: 100%;
@@ -121,34 +113,35 @@
   </style>
 </head>
 <body>
-  <div class="upload-box" id="uploadBox">
-    <span id="uploadText">+</span>
-    <img id="preview" src="#" alt="Anteprima">
+
+<div class="upload-box" id="uploadBox">
+  <span id="uploadText">+</span>
+  <img id="preview" src="#" alt="Anteprima">
+</div>
+
+<input type="file" accept="image/*" id="photoInput" capture="environment" style="display: none;">
+
+<div class="search-section">
+  <h2>Cerca Paziente</h2>
+  <input type="text" placeholder="Nome" id="nomePaziente">
+  <br>
+  <button onclick="alert('Funzione cerca non ancora implementata')">Cerca</button>
+  <div class="auth-links">
+    <a href="login.html">Login</a> | <a href="signup.html">Registrati</a>
   </div>
+</div>
 
-  <input type="file" accept="image/*" id="photoInput" capture="environment" style="display: none;">
-
-  <div class="search-section">
-    <h2>Cerca Paziente</h2>
-    <input type="text" placeholder="Nome" id="nomePaziente">
-    <br>
-    <button onclick="alert('Funzione cerca non ancora implementata')">Cerca</button>
-    <div class="auth-links">
-      <a href="login.html">Login</a> | <a href="signup.html">Registrati</a>
-    </div>
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2>Inserisci Dati Paziente</h2>
+    <input type="text" id="nome" placeholder="Nome">
+    <input type="text" id="cognome" placeholder="Cognome">
+    <input type="date" id="dataNascita">
+    <button onclick="proseguiScatto()">Continua</button>
   </div>
+</div>
 
-  <div class="modal" id="modal">
-    <div class="modal-content">
-      <h2>Inserisci Dati Paziente</h2>
-      <input type="text" id="nome" placeholder="Nome">
-      <input type="text" id="cognome" placeholder="Cognome">
-      <input type="date" id="dataNascita">
-      <button onclick="proseguiScatto()">Continua</button>
-    </div>
-  </div>
-
-  <script>
+<script>
   const CLIENT_ID = '208608835457-ac67ssckuq0jmn9laavdpol4lsuthnkm.apps.googleusercontent.com';
   const API_KEY = 'AIzaSyDVID4DMYceBmam9oYzNRzAbtq0hr_79Nk';
   const FOLDER_ID = '17UQfGDhvgIY35Q63oG4aPuXEEyVl3uqi';
@@ -174,6 +167,7 @@
 
     if (nome && cognome && data) {
       modal.style.display = "none";
+
       gapi.load('client', () => {
         gapi.client.init({ apiKey: API_KEY }).then(() => {
           tokenClient = google.accounts.oauth2.initTokenClient({
@@ -182,7 +176,10 @@
             callback: (resp) => {
               accessToken = resp.access_token;
               if (accessToken) {
+                console.log("🟢 Token ricevuto");
                 photoInput.click();
+              } else {
+                console.error("❌ Nessun token ricevuto");
               }
             }
           });
@@ -210,18 +207,18 @@
       };
 
       const boundary = '-------314159265358979323846';
-      const delimiter = '\\r\\n--' + boundary + '\\r\\n';
-      const close_delim = '\\r\\n--' + boundary + '--';
+      const delimiter = '\r\n--' + boundary + '\r\n';
+      const close_delim = '\r\n--' + boundary + '--';
       const contentType = file.type;
       const base64Data = reader.result.split(',')[1];
 
       const multipartRequestBody =
         delimiter +
-        'Content-Type: application/json; charset=UTF-8\\r\\n\\r\\n' +
+        'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
         JSON.stringify(metadata) +
         delimiter +
-        'Content-Type: ' + contentType + '\\r\\n' +
-        'Content-Transfer-Encoding: base64\\r\\n\\r\\n' +
+        'Content-Type: ' + contentType + '\r\n' +
+        'Content-Transfer-Encoding: base64\r\n\r\n' +
         base64Data +
         close_delim;
 
@@ -244,6 +241,5 @@
     reader.readAsDataURL(file);
   });
 </script>
-
 </body>
 </html>
