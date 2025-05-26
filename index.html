@@ -65,7 +65,7 @@
 
     .auth-links {
       font-size: 14px;
-      margin-top: 30px; /* aumentato da 12px a 30px */
+      margin-top: 30px;
     }
 
     .auth-links a {
@@ -185,18 +185,37 @@
       }
     }
 
-    photoInput.addEventListener("change", () => {
+    photoInput.addEventListener("change", async () => {
       const file = photoInput.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = e => {
-          preview.src = e.target.result;
-          preview.style.display = "block";
-          uploadText.style.display = "none";
-          localStorage.setItem("imageData", e.target.result);
-          window.location.href = "risultati.html";
-        };
-        reader.readAsDataURL(file);
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+        uploadText.style.display = "none";
+      };
+      reader.readAsDataURL(file);
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("nome", document.getElementById("nome").value);
+      formData.append("cognome", document.getElementById("cognome").value);
+      formData.append("dataNascita", document.getElementById("dataNascita").value);
+
+      try {
+        const response = await fetch("https://a9f8-35-198-255-212.ngrok-free.app/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        const result = await response.json();
+        localStorage.setItem("risultatoAnalisi", JSON.stringify(result));
+        localStorage.setItem("imageData", reader.result);
+        window.location.href = "risultati.html";
+      } catch (err) {
+        alert("Errore durante l'invio al server Colab");
+        console.error(err);
       }
     });
   </script>
