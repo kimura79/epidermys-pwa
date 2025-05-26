@@ -1,55 +1,28 @@
-<!-- risultati.html -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Risultati Analisi – Epidermys</title>
-  <style>
-    body {
-      font-family: Helvetica, sans-serif;
-      text-align: center;
-      padding: 2em;
-      background-color: #fff;
-    }
-
-    h1 {
-      color: #2261a9;
-      margin-bottom: 10px;
-    }
-
-    .foto {
-      width: 90%;
-      max-width: 300px;
-      margin: 20px auto;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-    }
-
-    .risultato {
-      margin-top: 20px;
-      text-align: left;
-      background: #f2f2f2;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-      font-size: 16px;
-    }
-  </style>
+  <title>Risultato Analisi</title>
 </head>
 <body>
-  <h1>Risultati Analisi</h1>
-  <img id="fotoRisultato" class="foto" src="#" alt="Foto analizzata">
-  <div class="risultato" id="risultatoBox"></div>
+  <h1>Risultato Analisi Dermatologica</h1>
+  <img id="overlayImg" src="#" alt="Overlay" style="max-width:100%;border:2px solid #ccc;" />
+  <pre id="dati"></pre>
 
   <script>
-    const risultato = JSON.parse(localStorage.getItem("risultatoAnalisi"));
-    const imageSrc = localStorage.getItem("imageData");
+    const fileId = localStorage.getItem('lastFileId');
+    const baseName = fileId.replace('.jpg', '');
 
-    document.getElementById("fotoRisultato").src = imageSrc;
-    document.getElementById("risultatoBox").innerText = JSON.stringify(risultato, null, 2);
+    const overlayUrl = `https://drive.google.com/uc?export=view&id=${baseName}_overlay`; // es: foto_123456_overlay.png
+    const dataUrl = `https://drive.google.com/uc?export=download&id=${baseName}_dati`;   // es: foto_123456_dati.txt
+
+    document.getElementById("overlayImg").src = overlayUrl;
+
+    fetch(dataUrl)
+      .then(res => res.text())
+      .then(text => {
+        document.getElementById("dati").innerText = text;
+      });
   </script>
 </body>
 </html>
