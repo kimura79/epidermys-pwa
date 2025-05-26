@@ -10,18 +10,27 @@
   <pre id="dati"></pre>
 
   <script>
-    const fileId = localStorage.getItem('lastFileId');
-    const baseName = fileId.replace('.jpg', '');
+    // File originale caricato (es: foto_1716812958123.jpg)
+    const originalFileId = localStorage.getItem("lastFileId");
 
-    const overlayUrl = `https://drive.google.com/uc?export=view&id=${baseName}_overlay`; // es: foto_123456_overlay.png
-    const dataUrl = `https://drive.google.com/uc?export=download&id=${baseName}_dati`;   // es: foto_123456_dati.txt
+    // Rimuove estensione se presente
+    const baseName = originalFileId?.replace(/\\.jpg|\\.png/, '');
 
+    // Costruisce i link pubblici su Google Drive (serve che i file siano condivisi)
+    const overlayUrl = `https://drive.google.com/uc?export=view&id=${baseName}_overlay`;
+    const dataUrl = `https://drive.google.com/uc?export=download&id=${baseName}_dati`;
+
+    // Mostra l’immagine overlay
     document.getElementById("overlayImg").src = overlayUrl;
 
+    // Carica i dati dell’analisi
     fetch(dataUrl)
       .then(res => res.text())
       .then(text => {
         document.getElementById("dati").innerText = text;
+      })
+      .catch(() => {
+        document.getElementById("dati").innerText = "❌ Dati non trovati";
       });
   </script>
 </body>
