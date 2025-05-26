@@ -30,6 +30,13 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
+    .link-box {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #444;
+      word-break: break-word;
+    }
+
     .back-button {
       margin-top: 30px;
       display: inline-block;
@@ -48,21 +55,35 @@
 <body>
 
   <h1>Analisi completata</h1>
-  <p>Qui sotto trovi il risultato visivo con l’overlay generato dalla GPU:</p>
+  <p>Qui sotto trovi il risultato visivo con l’overlay generato:</p>
 
   <img id="overlay-result" src="" alt="Risultato Analisi">
+
+  <div class="link-box" id="linkBox"></div>
 
   <a href="index.html" class="back-button">Torna alla Home</a>
 
   <script>
-    const url = localStorage.getItem("overlay_url");
+    const base64 = localStorage.getItem("overlay_base64");
     const img = document.getElementById("overlay-result");
+    const linkBox = document.getElementById("linkBox");
 
-    if (url) {
-      img.src = url;
+    if (base64) {
+      img.onload = () => {
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+        linkBox.innerHTML = `
+          ✅ <strong>Analisi dermatologica completata dalla GPU</strong><br>
+          Dimensioni immagine: ${width}×${height} px
+        `;
+      };
+      img.src = "data:image/png;base64," + base64;
     } else {
       img.style.display = "none";
-      document.body.insertAdjacentHTML('beforeend', '<p style="color: red;">⚠️ Nessun risultato disponibile. Torna alla home e ripeti l’analisi.</p>');
+      linkBox.innerHTML = `
+        ⚠️ Nessun risultato disponibile.<br>
+        Torna alla <a href="index.html">home</a> e ripeti l’analisi.
+      `;
     }
   </script>
 
