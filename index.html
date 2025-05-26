@@ -159,6 +159,7 @@
     const preview = document.getElementById("preview");
     const uploadText = document.getElementById("uploadText");
     let accessToken = null;
+    let tokenClient;
 
     uploadBox.addEventListener("click", () => {
       modal.style.display = "flex";
@@ -168,18 +169,18 @@
       const nome = document.getElementById("nome").value;
       const cognome = document.getElementById("cognome").value;
       const data = document.getElementById("dataNascita").value;
+
       if (nome && cognome && data) {
         modal.style.display = "none";
-        handleAuth();
+        gapi.load('client', initAuth);
       } else {
         alert("Compila tutti i campi.");
       }
     }
 
-    function handleAuth() {
-      gapi.load('client', async () => {
-        await gapi.client.init({ apiKey: API_KEY });
-        const tokenClient = google.accounts.oauth2.initTokenClient({
+    function initAuth() {
+      gapi.client.init({ apiKey: API_KEY }).then(() => {
+        tokenClient = google.accounts.oauth2.initTokenClient({
           client_id: CLIENT_ID,
           scope: SCOPES,
           callback: (resp) => {
