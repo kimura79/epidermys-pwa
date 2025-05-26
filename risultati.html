@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Risultato Analisi</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risultato Analisi Dermatologica</title>
   <style>
     body {
       font-family: Helvetica, sans-serif;
@@ -11,77 +11,64 @@
       background-color: #fff;
     }
     h1 {
-      color: #222;
+      color: #1c3d80;
     }
     #overlay {
       max-width: 100%;
       border: 2px solid #ccc;
-      margin-top: 20px;
+      margin-bottom: 20px;
     }
     #dati {
-      margin-top: 30px;
+      background: #f5f5f5;
       padding: 1em;
-      background-color: #f8f8f8;
-      border: 1px solid #ccc;
-      font-family: monospace;
+      border-radius: 5px;
+      font-size: 16px;
       white-space: pre-wrap;
     }
-    .error {
-      color: darkred;
-      font-weight: bold;
-    }
   </style>
+  <script>
+    const API_KEY = 'AIzaSyDVID4DMYceBmam9oYzNRzAbtq0hr_79Nk';
+
+    async function loadResults() {
+      const fileId = localStorage.getItem('lastFileId');
+      if (!fileId) {
+        document.getElementById('dati').textContent = '❌ ID immagine non trovato';
+        return;
+      }
+
+      const baseName = 'foto_' + fileId.slice(-13); // usa parte finale per pattern nome
+
+      const query = encodeURIComponent(`name contains '${baseName}'`);
+      const url = `https://www.googleapis.com/drive/v3/files?q=${query}&key=${API_KEY}&fields=files(id,name,mimeType)`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      const overlayFile = data.files.find(f => f.name.endsWith('_overlay.png'));
+      const txtFile = data.files.find(f => f.name.endsWith('_dati.txt'));
+
+      if (overlayFile) {
+        const imgSrc = `https://www.googleapis.com/drive/v3/files/${overlayFile.id}?alt=media&key=${API_KEY}`;
+        document.getElementById('overlay').src = imgSrc;
+      } else {
+        document.getElementById('overlay').alt = 'Overlay non trovato';
+      }
+
+      if (txtFile) {
+        const txtRes = await fetch(`https://www.googleapis.com/drive/v3/files/${txtFile.id}?alt=media&key=${API_KEY}`);
+        const txt = await txtRes.text();
+        document.getElementById('dati').textContent = txt;
+      } else {
+        document.getElementById('dati').textContent = '❌ Dati non trovati';
+      }
+    }
+
+    window.onload = loadResults;
+  </script>
 </head>
 <body>
   <h1>Risultato Analisi Dermatologica</h1>
-  <div id="contenuto"></div>
-
-  <script>
-    const fileId = localStorage.getItem("lastFileId");
-    const resultsFolder = "Epidermys_Results"; // Solo visivo, non usato direttamente
-
-    if (!fileId) {
-      document.getElementById("contenuto").innerHTML = "<p class='error'>❌ Nessun file trovato. Torna alla home e scatta una foto.</p>";
-    } else {
-      const overlayUrl = `https://drive.google.com/uc?id=${fileId}&export=download`;
-      const txtUrl = `https://drive.google.com/uc?id=${fileId.replace("overlay.png", "dati.txt")}`;
-
-      // Mostra immagine overlay
-      const img = document.createElement("img");
-      img.src = overlayUrl;
-      img.alt = "Overlay";
-      img.id = "overlay";
-      document.getElementById("contenuto").appendChild(img);
-
-      // Scarica dati .txt (solo se presente)
-      fetch(`https://www.googleapis.com/drive/v3/files?q=name+contains+'dati.txt'&fields=files(id,name)&key=AIzaSyDVID4DMYceBmam9oYzNRzAbtq0hr_79Nk`)
-        .then(resp => resp.json())
-        .then(data => {
-          const txtFile = data.files?.[0];
-          if (txtFile) {
-            fetch(`https://drive.google.com/uc?id=${txtFile.id}`)
-              .then(res => res.text())
-              .then(text => {
-                const div = document.createElement("div");
-                div.id = "dati";
-                div.textContent = text;
-                document.getElementById("contenuto").appendChild(div);
-              });
-          } else {
-            const error = document.createElement("p");
-            error.textContent = "❌ Dati non trovati";
-            error.className = "error";
-            document.getElementById("contenuto").appendChild(error);
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          const error = document.createElement("p");
-          error.textContent = "❌ Errore nel recupero dati";
-          error.className = "error";
-          document.getElementById("contenuto").appendChild(error);
-        });
-    }
-  </script>
+  <img id="overlay" alt="Overlay dermatologico">
+  <div id="dati">Caricamento dati...</div>
 </body>
 </html>
