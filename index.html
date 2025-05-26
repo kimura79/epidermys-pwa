@@ -5,15 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Epidermys PWA – Analisi Viso</title>
   <link rel="manifest" href="manifest.json">
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="https://apis.google.com/js/api.js"></script>
   <style>
     body {
       font-family: Helvetica, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: start;
       padding: 2em;
       background-color: #fff;
     }
@@ -31,88 +28,27 @@
       font-size: 48px;
       color: #2261a9;
     }
-    .search-section {
-      margin-top: 40px;
-      text-align: center;
-    }
-    .search-section h2 {
-      font-size: 22px;
-      margin-bottom: 8px;
-    }
-    .search-section input {
-      padding: 10px;
-      width: 250px;
-      font-size: 16px;
-      border: none;
-      background-color: #eee;
-      border-radius: 4px;
-      margin-bottom: 12px;
-    }
-    .search-section button {
-      background-color: #2261a9;
-      color: #fff;
-      padding: 10px 25px;
-      font-size: 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .auth-links {
-      font-size: 14px;
-      margin-top: 12px;
-    }
-    .auth-links a {
-      color: #2261a9;
-      text-decoration: none;
-      margin: 0 6px;
-    }
-    .auth-links a:hover {
-      text-decoration: underline;
-      color: #003f7d;
-    }
     #preview {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: none;
     }
-    .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-      display: none;
-    }
-    .modal-content {
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-    }
-    .modal-content input, #scattaBtn {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 16px;
-    }
     #scattaBtn {
       background-color: #2261a9;
       color: white;
       border: none;
-      cursor: pointer;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 16px;
+      margin-top: 20px;
       display: none;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
+
   <div class="upload-box" id="uploadBox">
     <span id="uploadText">+</span>
     <img id="preview" src="#" alt="Anteprima">
@@ -121,115 +57,26 @@
   <input type="file" accept="image/*" id="photoInput" capture="environment" style="display: none;">
   <button id="scattaBtn" onclick="photoInput.click()">Scatta ora</button>
 
-  <div class="search-section">
-    <h2>Cerca Paziente</h2>
-    <input type="text" placeholder="Nome" id="nomePaziente">
-    <br>
-    <button onclick="alert('Funzione cerca non ancora implementata')">Cerca</button>
-    <div class="auth-links">
-      <a href="login.html">Login</a> | <a href="signup.html">Registrati</a>
-    </div>
-  </div>
-
-  <div class="modal" id="modal">
-    <div class="modal-content">
-      <h2>Inserisci Dati Paziente</h2>
-      <input type="text" id="nome" placeholder="Nome">
-      <input type="text" id="cognome" placeholder="Cognome">
-      <input type="date" id="dataNascita">
-      <button onclick="proseguiScatto()">Continua</button>
-    </div>
-  </div>
-
   <script>
-    const CLIENT_ID = '208608835457-ac67ssckuq0jmn9laavdpol4lsuthnkm.apps.googleusercontent.com';
-    const API_KEY = 'AIzaSyDVID4DMYceBmam9oYzNRzAbtq0hr_79Nk';
-    const FOLDER_ID = '17UQfGDhvgIY35Q63oG4aPuXEEyVl3uqi';
-    const SCOPES = 'https://www.googleapis.com/auth/drive.file';
-
-    const modal = document.getElementById("modal");
-    const photoInput = document.getElementById("photoInput");
     const uploadBox = document.getElementById("uploadBox");
+    const photoInput = document.getElementById("photoInput");
     const preview = document.getElementById("preview");
     const uploadText = document.getElementById("uploadText");
     const scattaBtn = document.getElementById("scattaBtn");
 
-    let accessToken = null;
-
     uploadBox.addEventListener("click", () => {
-      modal.style.display = "flex";
+      photoInput.click();
     });
-
-    function proseguiScatto() {
-      const nome = document.getElementById("nome").value;
-      const cognome = document.getElementById("cognome").value;
-      const data = document.getElementById("dataNascita").value;
-
-      if (nome && cognome && data) {
-        modal.style.display = "none";
-        gapi.load('client', () => {
-          gapi.client.init({ apiKey: API_KEY }).then(() => {
-            const tokenClient = google.accounts.oauth2.initTokenClient({
-              client_id: CLIENT_ID,
-              scope: SCOPES,
-              callback: (resp) => {
-                accessToken = resp.access_token;
-                if (accessToken) scattaBtn.style.display = "block";
-              }
-            });
-            tokenClient.requestAccessToken();
-          });
-        });
-      } else {
-        alert("Compila tutti i campi.");
-      }
-    }
 
     photoInput.addEventListener("change", async () => {
       const file = photoInput.files[0];
-      if (!file || !accessToken) return;
+      if (!file) return;
 
       const reader = new FileReader();
       reader.onloadend = async () => {
         preview.src = reader.result;
         preview.style.display = "block";
         uploadText.style.display = "none";
-
-        const metadata = {
-          name: 'foto_' + Date.now() + '.jpg',
-          parents: [FOLDER_ID]
-        };
-
-        const boundary = '-------314159265358979323846';
-        const delimiter = '\r\n--' + boundary + '\r\n';
-        const close_delim = '\r\n--' + boundary + '--';
-        const contentType = file.type;
-        const base64Data = reader.result.split(',')[1];
-
-        const multipartRequestBody =
-          delimiter +
-          'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
-          JSON.stringify(metadata) +
-          delimiter +
-          'Content-Type: ' + contentType + '\r\n' +
-          'Content-Transfer-Encoding: base64\r\n\r\n' +
-          base64Data +
-          close_delim;
-
-        const driveUpload = await fetch(
-          'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
-          {
-            method: 'POST',
-            headers: {
-              Authorization: 'Bearer ' + accessToken,
-              'Content-Type': 'multipart/related; boundary=' + boundary,
-            },
-            body: multipartRequestBody
-          }
-        );
-
-        const driveResult = await driveUpload.json();
-        localStorage.setItem('lastFileId', driveResult.id);
 
         const formData = new FormData();
         formData.append("image", file);
@@ -239,8 +86,11 @@
           body: formData
         });
 
-        const result = await response.json();
-        localStorage.setItem("overlay_link", result.drive_link);
+        const blob = await response.blob();
+        const localUrl = URL.createObjectURL(blob);
+
+        // Salva URL blob per risultati
+        localStorage.setItem("overlay_url", localUrl);
         window.location.href = "risultati.html";
       };
 
