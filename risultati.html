@@ -1,8 +1,9 @@
+<!-- risultati.html -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Risultati Analisi – Epidermys</title>
   <style>
     body {
@@ -25,158 +26,30 @@
       border-radius: 8px;
     }
 
-    .metadati {
+    .risultato {
+      margin-top: 20px;
       text-align: left;
-      max-width: 400px;
-      margin: 0 auto;
-      font-size: 18px;
-      line-height: 1.6;
-      background-color: #f2f2f2;
+      background: #f2f2f2;
       padding: 20px;
-      border-radius: 10px;
-    }
-
-    .metadati strong {
-      color: #2261a9;
-    }
-
-    .btn {
-      margin-top: 30px;
-      background-color: #2261a9;
-      color: white;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .btn:hover {
-      background-color: #003f7d;
-    }
-
-    .overlay-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 1rem;
-      margin-top: 2rem;
-      max-width: 800px;
+      border-radius: 8px;
+      max-width: 500px;
       margin-left: auto;
       margin-right: auto;
-    }
-
-    .overlay-box {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 8px;
-      background: #fff;
-    }
-
-    .overlay-box img {
-      width: 100%;
-      border-radius: 6px;
-    }
-
-    .overlay-label {
-      font-size: 14px;
-      font-weight: bold;
-      margin-top: 5px;
-      color: #333;
-    }
-
-    .errore {
-      color: red;
-      font-weight: bold;
-      margin-bottom: 1rem;
-    }
-
-    details {
-      background: #eee;
-      padding: 10px;
-      margin-top: 20px;
-      border-radius: 5px;
-      text-align: left;
-    }
-
-    summary {
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    pre {
-      font-size: 13px;
-      overflow-x: auto;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-
-  <h1>Risultato Analisi Visiva</h1>
-
-  <img id="foto" class="foto" src="#" alt="Foto caricata" />
-
-  <div class="metadati" id="outputGPT">
-    <p>Caricamento...</p>
-  </div>
-
-  <div class="overlay-grid" id="overlayContainer"></div>
-
-  <button class="btn" onclick="tornaHome()">Torna alla Home</button>
+  <h1>Risultati Analisi</h1>
+  <img id="fotoRisultato" class="foto" src="#" alt="Foto analizzata">
+  <div class="risultato" id="risultatoBox"></div>
 
   <script>
-    function tornaHome() {
-      window.location.href = "index.html";
-    }
+    const risultato = JSON.parse(localStorage.getItem("risultatoAnalisi"));
+    const imageSrc = localStorage.getItem("imageData");
 
-    const foto = localStorage.getItem("imageData");
-    const output = localStorage.getItem("gpt_output");
-
-    if (foto) {
-      document.getElementById("foto").src = foto;
-    }
-
-    const container = document.getElementById("outputGPT");
-    const overlayContainer = document.getElementById("overlayContainer");
-
-    if (output) {
-      try {
-        const parsed = JSON.parse(output);
-        const json = parsed.output || parsed;
-
-        let html = "";
-
-        // Sezione DEBUG JSON
-        html += `<details><summary>DEBUG JSON</summary><pre>${JSON.stringify(parsed, null, 2)}</pre></details>`;
-
-        if (json.età !== undefined) html += `<p><strong>Età:</strong> ${json.età} anni</p>`;
-        if (json.posa) html += `<p><strong>Posa:</strong> ${json.posa}</p>`;
-        if (json.fototipo) html += `<p><strong>Fototipo:</strong> ${json.fototipo}</p>`;
-        if (json["L* medio"] !== undefined) html += `<p><strong>L* medio:</strong> ${json["L* medio"]}</p>`;
-
-        container.innerHTML = html || "<p>Nessun dato disponibile.</p>";
-
-        if (json.overlays && typeof json.overlays === 'object') {
-          overlayContainer.innerHTML = '';
-          for (const key in json.overlays) {
-            const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-            const url = json.overlays[key];
-            overlayContainer.innerHTML += `
-              <div class="overlay-box">
-                <img src="${url}" alt="${label}">
-                <div class="overlay-label">${label}</div>
-              </div>
-            `;
-          }
-        }
-
-      } catch (err) {
-        console.error("Errore di parsing:", err);
-        container.innerHTML = `<p class="errore">Errore nel parsing dei dati</p><pre>${output}</pre>`;
-      }
-    } else {
-      container.innerHTML = "<p>Nessun dato disponibile.</p>";
-    }
+    document.getElementById("fotoRisultato").src = imageSrc;
+    document.getElementById("risultatoBox").innerText = JSON.stringify(risultato, null, 2);
   </script>
-
 </body>
 </html>
