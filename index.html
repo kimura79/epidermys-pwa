@@ -91,8 +91,10 @@
 
           if (result.overlay_base64) {
             console.log("🟢 Risultato ricevuto:", result);
-            localStorage.setItem("overlay_base64", result.overlay_base64);
-            window.location.href = "risultati.html";
+            const blob = await (await fetch("data:image/png;base64," + result.overlay_base64)).blob();
+const blobUrl = URL.createObjectURL(blob);
+sessionStorage.setItem("overlay_blob_url", blobUrl);
+window.location.href = "risultati.html";
           } else {
             throw new Error("Risposta JSON mancante");
           }
