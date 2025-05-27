@@ -91,16 +91,23 @@
           const result = await response.json();
 
           if (result.overlay_base64) {
-            console.log("🟢 Risultato ricevuto:", result);
-            sessionStorage.setItem("overlay_base64", result.overlay_base64);
-            sessionStorage.setItem("red_stats", JSON.stringify({
-              percentuale_red_areas: result.percentuale_red_areas,
-              pixel_totali: result.pixel_totali,
-              pixel_red: result.pixel_red
-            }));
-            window.location.href = "risultati.html";
-          } else {
-            throw new Error("Risposta JSON mancante");
+  console.log("🟢 Risultato ricevuto:", result);
+
+  // Salva l'immagine in base64
+  sessionStorage.setItem("overlay_base64", result.overlay_base64);
+
+  // Salva le statistiche e il fototipo
+  sessionStorage.setItem("red_stats", JSON.stringify({
+    percentuale_red_areas: result.percentuale_red_areas,
+    pixel_totali: result.pixel_totali,
+    pixel_red: result.pixel_red,
+    fototipo_stimato: result.fototipo_stimato  // 🔴 aggiunto qui
+  }));
+
+  // Vai alla pagina risultati
+  window.location.href = "risultati.html";
+} else {
+  throw new Error("Risposta JSON mancante");
           }
         } catch (error) {
           console.error("❌ Errore durante l’analisi:", error);
