@@ -51,39 +51,34 @@
 
   <h1>Analisi Red Areas</h1>
   <img id="overlay-result" src="" alt="Risultato Analisi">
-
   <div class="stat-box" id="statBox">Caricamento risultati...</div>
-
   <a href="index.html" class="back-button">Torna alla Home</a>
 
   <script>
-  const base64 = sessionStorage.getItem("overlay_base64");
-  const percentuale = sessionStorage.getItem("percentuale_red_areas");
-  const pixel_red = sessionStorage.getItem("pixel_red");
-  const pixel_totali = sessionStorage.getItem("pixel_totali");
-  const fototipo = sessionStorage.getItem("fototipo_stimato");
+    const base64 = sessionStorage.getItem("overlay_base64");
+    const stats = JSON.parse(sessionStorage.getItem("red_stats") || "{}");
 
-  const img = document.getElementById("overlay-result");
-  const linkBox = document.getElementById("linkBox");
+    const img = document.getElementById("overlay-result");
+    const statBox = document.getElementById("statBox");
 
-  if (base64) {
-    img.onload = () => {
-      linkBox.innerHTML = `
-        🔴 <strong>Red Areas rilevate:</strong><br>
-        Percentuale: <strong>${percentuale}%</strong><br>
-        Pixel red: ${pixel_red} su ${pixel_totali} totali<br>
-        Fototipo stimato: <strong>${fototipo}</strong>
+    if (base64) {
+      img.onload = () => {
+        statBox.innerHTML = `
+          🔴 <strong>Red Areas rilevate:</strong><br>
+          Percentuale: <strong>${stats.percentuale_red_areas}%</strong><br>
+          Pixel red: ${stats.pixel_red} su ${stats.pixel_totali} totali<br>
+          Fototipo stimato: <strong>${stats.fototipo_stimato || "?"}</strong>
+        `;
+      };
+      img.src = "data:image/png;base64," + base64;
+    } else {
+      img.style.display = "none";
+      statBox.innerHTML = `
+        ⚠️ Nessun risultato disponibile.<br>
+        Torna alla <a href="index.html">home</a> e ripeti l’analisi.
       `;
-    };
-    img.src = "data:image/png;base64," + base64;
-  } else {
-    img.style.display = "none";
-    linkBox.innerHTML = `
-      ⚠️ Nessun risultato disponibile.<br>
-      Torna alla <a href="index.html">home</a> e ripeti l’analisi.
-    `;
-  }
-</script>
+    }
+  </script>
 
 </body>
 </html>
