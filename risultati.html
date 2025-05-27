@@ -64,11 +64,11 @@
   <a href="index.html" class="back-button">Torna alla Home</a>
 
   <script>
-    const base64 = localStorage.getItem("overlay_base64");
+    const blobUrl = sessionStorage.getItem("overlay_blob_url");
     const img = document.getElementById("overlay-result");
     const linkBox = document.getElementById("linkBox");
 
-    if (base64) {
+    if (blobUrl) {
       img.onload = () => {
         const width = img.naturalWidth;
         const height = img.naturalHeight;
@@ -77,7 +77,7 @@
           Dimensioni immagine: ${width}×${height}px
         `;
       };
-      img.src = "data:image/png;base64," + base64;
+      img.src = blobUrl;
     } else {
       img.style.display = "none";
       linkBox.innerHTML = `
