@@ -89,13 +89,13 @@
         if (!response.ok) throw new Error("Errore server: " + response.status);
         const result = await response.json();
 
-        if (result.image_base64) {
-          console.log("🟢 Risultato ricevuto:", result);
-          sessionStorage.setItem("overlay_base64", result.image_base64);  // usa sessionStorage per evitare quota exceeded
-          window.location.href = "risultati.html";
-        } else {
-          throw new Error("Risposta JSON mancante");
-        }
+        if (result.overlay_base64) {
+  console.log("🟢 Risultato ricevuto:", result);
+  sessionStorage.setItem("overlay_base64", result.overlay_base64);  // usa la chiave corretta
+  window.location.href = "risultati.html";
+} else {
+  throw new Error("Risposta JSON mancante");
+}
       } catch (error) {
         console.error("❌ Errore durante l’analisi:", error);
         alert("Errore durante l’analisi: " + error.message);
