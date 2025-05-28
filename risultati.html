@@ -61,10 +61,8 @@
   <a href="index.html" class="back-button">Torna alla Home</a>
 
   <script>
-    const BASE_URL = "https://yegzn9io6jvq3e-8888.proxy.runpod.net/output/";
-
-    const redFilename = sessionStorage.getItem("overlay_red_filename");
-    const evenFilename = sessionStorage.getItem("overlay_evenness_filename");
+    const redUrl = sessionStorage.getItem("overlay_red_url");
+    const evenUrl = sessionStorage.getItem("overlay_evenness_url");
     const redStats = JSON.parse(sessionStorage.getItem("red_stats") || "{}");
     const evenStats = JSON.parse(sessionStorage.getItem("evenness_stats") || {});
     const fototipo = sessionStorage.getItem("fototipo_stimato") || "?";
@@ -75,8 +73,8 @@
     const evenBox = document.getElementById("evennessStatsBox");
 
     // === Red Areas ===
-    if (redFilename) {
-      redImg.src = BASE_URL + redFilename;
+    if (redUrl) {
+      redImg.src = redUrl;
       redBox.innerHTML = `
         🔴 <strong>Red Areas rilevate:</strong><br>
         Percentuale: <strong>${redStats.percentuale_red_areas}%</strong><br>
@@ -89,8 +87,8 @@
     }
 
     // === Evenness ===
-    if (evenFilename) {
-      evenImg.src = BASE_URL + evenFilename;
+    if (evenUrl) {
+      evenImg.src = evenUrl;
       evenBox.innerHTML = `
         🔵 <strong>Uniformità cutanea:</strong><br>
         Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
