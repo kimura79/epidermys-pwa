@@ -89,12 +89,12 @@
           if (!response.ok) throw new Error("Errore server: " + response.status);
           const result = await response.json();
 
-          if (result.overlay_red_base64 && result.overlay_evenness_base64) {
+          if (result.overlay_red_filename && result.overlay_evenness_filename) {
             console.log("🟢 Risultato ricevuto:", result);
 
-            // Salva overlay
-            sessionStorage.setItem("overlay_red_base64", result.overlay_red_base64);
-            sessionStorage.setItem("overlay_evenness_base64", result.overlay_evenness_base64);
+            // Salva nomi file overlay
+            sessionStorage.setItem("overlay_red_filename", result.overlay_red_filename);
+            sessionStorage.setItem("overlay_evenness_filename", result.overlay_evenness_filename);
 
             // Salva metadati
             sessionStorage.setItem("red_stats", JSON.stringify({
