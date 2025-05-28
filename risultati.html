@@ -61,8 +61,8 @@
   <a href="index.html" class="back-button">Torna alla Home</a>
 
   <script>
-    const redBase64 = sessionStorage.getItem("overlay_red_base64");
-    const evenBase64 = sessionStorage.getItem("overlay_evenness_base64");
+    const redFilename = sessionStorage.getItem("overlay_red_filename");
+    const evenFilename = sessionStorage.getItem("overlay_evenness_filename");
     const redStats = JSON.parse(sessionStorage.getItem("red_stats") || "{}");
     const evenStats = JSON.parse(sessionStorage.getItem("evenness_stats") || {});
     const fototipo = sessionStorage.getItem("fototipo_stimato") || "?";
@@ -73,8 +73,8 @@
     const evenBox = document.getElementById("evennessStatsBox");
 
     // === Red Areas ===
-    if (redBase64) {
-      redImg.src = "data:image/png;base64," + redBase64;
+    if (redFilename) {
+      redImg.src = "https://app.epidermys.com/output/" + redFilename;
       redBox.innerHTML = `
         🔴 <strong>Red Areas rilevate:</strong><br>
         Percentuale: <strong>${redStats.percentuale_red_areas}%</strong><br>
@@ -86,9 +86,9 @@
       redBox.innerHTML = `⚠️ Nessun risultato per Red Areas.`;
     }
 
-    // === Skin Evenness ===
-    if (evenBase64) {
-      evenImg.src = "data:image/png;base64," + evenBase64;
+    // === Evenness ===
+    if (evenFilename) {
+      evenImg.src = "https://app.epidermys.com/output/" + evenFilename;
       evenBox.innerHTML = `
         🔵 <strong>Uniformità cutanea:</strong><br>
         Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
