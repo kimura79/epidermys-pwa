@@ -71,8 +71,19 @@
 
     const redStats = JSON.parse(sessionStorage.getItem("red_stats") || "{}");
     const evenStats = JSON.parse(sessionStorage.getItem("evenness_stats") || "{}");
-    const texturePercent = sessionStorage.getItem("percentuale_texture") || "?";
+    const texturePercentStr = sessionStorage.getItem("percentuale_texture") || "?";
     const fototipo = sessionStorage.getItem("fototipo_stimato") || "?";
+
+    // Converti texture in numero e valuta classificazione
+    let textureClass = "?";
+    const texturePercent = parseFloat(texturePercentStr);
+    if (!isNaN(texturePercent)) {
+      if (texturePercent < 10) textureClass = "Ottima";
+      else if (texturePercent < 20) textureClass = "Buona";
+      else if (texturePercent < 35) textureClass = "Media";
+      else if (texturePercent < 50) textureClass = "Irregolare";
+      else textureClass = "Grave";
+    }
 
     // Immagini
     document.getElementById("overlay-red").src = redURL || "";
@@ -99,6 +110,7 @@
     document.getElementById("textureStatsBox").innerHTML = textureURL ? `
       🟠 <strong>Irregolarità di Texture:</strong><br>
       Percentuale area irregolare: <strong>${texturePercent}%</strong><br>
+      Classificazione: <strong>${textureClass}</strong><br>
       Fototipo stimato: <strong>${fototipo}</strong>
     ` : `⚠️ Nessun risultato per Texture Cutanea.`;
   </script>
