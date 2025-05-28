@@ -46,14 +46,6 @@
     .back-button:hover {
       background-color: #003f7d;
     }
-    pre {
-      text-align: left;
-      font-size: 14px;
-      white-space: pre-wrap;
-      background-color: #f2f2f2;
-      padding: 10px;
-      border-radius: 6px;
-    }
   </style>
 </head>
 <body>
@@ -79,7 +71,7 @@
 
     const redStats = JSON.parse(sessionStorage.getItem("red_stats") || "{}");
     const evenStats = JSON.parse(sessionStorage.getItem("evenness_stats") || "{}");
-    const textureStats = JSON.parse(sessionStorage.getItem("texture_zones") || "{}");
+    const texturePercent = sessionStorage.getItem("percentuale_texture") || "?";
     const fototipo = sessionStorage.getItem("fototipo_stimato") || "?";
 
     document.getElementById("overlay-red").src = redURL || "";
@@ -98,21 +90,13 @@
       Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
       Indice Evenness: <strong>${evenStats.evenness_score} / 100</strong><br>
       Fototipo stimato: <strong>${fototipo}</strong>
-    ` : `⚠️ Nessun risultato per Evenness.`;
+    ` : `⚠️ Nessun risultato per Skin Evenness.`;
 
-    if (textureURL) {
-      let txt = "";
-      for (const zona in textureStats) {
-        const info = textureStats[zona];
-        txt += `🔹 ${zona.toUpperCase()} → ${info.percentuale.toFixed(1)}% (${info.livello})\n`;
-      }
-      document.getElementById("textureStatsBox").innerHTML = `
-        🟠 <strong>Irregolarità di Texture:</strong><br>
-        <pre>${txt}</pre>
-      `;
-    } else {
-      document.getElementById("textureStatsBox").innerHTML = `⚠️ Nessun risultato per Texture.`;
-    }
+    document.getElementById("textureStatsBox").innerHTML = textureURL ? `
+      🟠 <strong>Irregolarità di Texture:</strong><br>
+      Percentuale area irregolare: <strong>${texturePercent}%</strong><br>
+      Fototipo stimato: <strong>${fototipo}</strong>
+    ` : `⚠️ Nessun risultato per Texture Cutanea.`;
   </script>
 
 </body>
