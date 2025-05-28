@@ -46,6 +46,14 @@
     .back-button:hover {
       background-color: #003f7d;
     }
+    pre {
+      text-align: left;
+      font-size: 14px;
+      white-space: pre-wrap;
+      background-color: #f2f2f2;
+      padding: 10px;
+      border-radius: 6px;
+    }
   </style>
 </head>
 <body>
@@ -58,46 +66,52 @@
   <img id="overlay-evenness" src="" alt="Overlay Evenness">
   <div class="stat-box" id="evennessStatsBox">Caricamento risultati...</div>
 
+  <h1>Analisi Texture Cutanea</h1>
+  <img id="overlay-texture" src="" alt="Overlay Texture">
+  <div class="stat-box" id="textureStatsBox">Caricamento risultati...</div>
+
   <a href="index.html" class="back-button">Torna alla Home</a>
 
   <script>
-    const redUrl = sessionStorage.getItem("overlay_red_url");
-    const evenUrl = sessionStorage.getItem("overlay_evenness_url");
+    const redURL = sessionStorage.getItem("overlay_red_url");
+    const evenURL = sessionStorage.getItem("overlay_evenness_url");
+    const textureURL = sessionStorage.getItem("overlay_texture_url");
+
     const redStats = JSON.parse(sessionStorage.getItem("red_stats") || "{}");
-    const evenStats = JSON.parse(sessionStorage.getItem("evenness_stats") || {});
+    const evenStats = JSON.parse(sessionStorage.getItem("evenness_stats") || "{}");
+    const textureStats = JSON.parse(sessionStorage.getItem("texture_zones") || "{}");
     const fototipo = sessionStorage.getItem("fototipo_stimato") || "?";
 
-    const redImg = document.getElementById("overlay-red");
-    const evenImg = document.getElementById("overlay-evenness");
-    const redBox = document.getElementById("redStatsBox");
-    const evenBox = document.getElementById("evennessStatsBox");
+    document.getElementById("overlay-red").src = redURL || "";
+    document.getElementById("overlay-evenness").src = evenURL || "";
+    document.getElementById("overlay-texture").src = textureURL || "";
 
-    // === Red Areas ===
-    if (redUrl) {
-      redImg.src = redUrl;
-      redBox.innerHTML = `
-        🔴 <strong>Red Areas rilevate:</strong><br>
-        Percentuale: <strong>${redStats.percentuale_red_areas}%</strong><br>
-        Pixel red: ${redStats.pixel_red} su ${redStats.pixel_totali}<br>
-        Fototipo stimato: <strong>${fototipo}</strong>
+    document.getElementById("redStatsBox").innerHTML = redURL ? `
+      🔴 <strong>Red Areas rilevate:</strong><br>
+      Percentuale: <strong>${redStats.percentuale_red_areas}%</strong><br>
+      Pixel red: ${redStats.pixel_red} su ${redStats.pixel_totali}<br>
+      Fototipo stimato: <strong>${fototipo}</strong>
+    ` : `⚠️ Nessun risultato per Red Areas.`;
+
+    document.getElementById("evennessStatsBox").innerHTML = evenURL ? `
+      🔵 <strong>Uniformità cutanea:</strong><br>
+      Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
+      Indice Evenness: <strong>${evenStats.evenness_score} / 100</strong><br>
+      Fototipo stimato: <strong>${fototipo}</strong>
+    ` : `⚠️ Nessun risultato per Evenness.`;
+
+    if (textureURL) {
+      let txt = "";
+      for (const zona in textureStats) {
+        const info = textureStats[zona];
+        txt += `🔹 ${zona.toUpperCase()} → ${info.percentuale.toFixed(1)}% (${info.livello})\n`;
+      }
+      document.getElementById("textureStatsBox").innerHTML = `
+        🟠 <strong>Irregolarità di Texture:</strong><br>
+        <pre>${txt}</pre>
       `;
     } else {
-      redImg.style.display = "none";
-      redBox.innerHTML = `⚠️ Nessun risultato per Red Areas.`;
-    }
-
-    // === Evenness ===
-    if (evenUrl) {
-      evenImg.src = evenUrl;
-      evenBox.innerHTML = `
-        🔵 <strong>Uniformità cutanea:</strong><br>
-        Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
-        Indice Evenness: <strong>${evenStats.evenness_score} / 100</strong><br>
-        Fototipo stimato: <strong>${fototipo}</strong>
-      `;
-    } else {
-      evenImg.style.display = "none";
-      evenBox.innerHTML = `⚠️ Nessun risultato per Skin Evenness.`;
+      document.getElementById("textureStatsBox").innerHTML = `⚠️ Nessun risultato per Texture.`;
     }
   </script>
 
