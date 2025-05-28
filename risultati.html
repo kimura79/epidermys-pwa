@@ -62,7 +62,7 @@
 
   <script>
     const redBase64 = sessionStorage.getItem("overlay_red_base64");
-    const evenBase64 = sessionStorage.getItem("overlay_evenness_base64");
+    const evenFilename = sessionStorage.getItem("overlay_evenness_filename");
     const redStats = JSON.parse(sessionStorage.getItem("red_stats") || "{}");
     const evenStats = JSON.parse(sessionStorage.getItem("evenness_stats") || {});
     const fototipo = sessionStorage.getItem("fototipo_stimato") || "?";
@@ -72,7 +72,7 @@
     const redBox = document.getElementById("redStatsBox");
     const evenBox = document.getElementById("evennessStatsBox");
 
-    // Red Areas
+    // === Red Areas ===
     if (redBase64) {
       redImg.src = "data:image/png;base64," + redBase64;
       redBox.innerHTML = `
@@ -86,9 +86,9 @@
       redBox.innerHTML = `⚠️ Nessun risultato per Red Areas.`;
     }
 
-    // Evenness
-    if (evenBase64) {
-      evenImg.src = "data:image/png;base64," + evenBase64;
+    // === Evenness (da file su server) ===
+    if (evenFilename) {
+      evenImg.src = "https://app.epidermys.com/output/" + evenFilename;
       evenBox.innerHTML = `
         🔵 <strong>Uniformità cutanea:</strong><br>
         Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
