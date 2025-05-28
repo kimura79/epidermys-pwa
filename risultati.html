@@ -21,9 +21,10 @@
       border: 2px solid #ccc;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-top: 10px;
     }
     .stat-box {
-      margin-top: 20px;
+      margin-top: 10px;
       font-size: 16px;
       color: #444;
       background-color: #eef1f5;
@@ -50,33 +51,53 @@
 <body>
 
   <h1>Analisi Red Areas</h1>
-  <img id="overlay-result" src="" alt="Risultato Analisi">
-  <div class="stat-box" id="statBox">Caricamento risultati...</div>
+  <img id="overlay-red" src="" alt="Overlay Red Areas">
+  <div class="stat-box" id="redStatsBox">Caricamento risultati...</div>
+
+  <h1>Analisi Skin Evenness</h1>
+  <img id="overlay-evenness" src="" alt="Overlay Evenness">
+  <div class="stat-box" id="evennessStatsBox">Caricamento risultati...</div>
+
   <a href="index.html" class="back-button">Torna alla Home</a>
 
   <script>
-    const base64 = sessionStorage.getItem("overlay_base64");
-    const stats = JSON.parse(sessionStorage.getItem("red_stats") || "{}");
+    const redBase64 = sessionStorage.getItem("overlay_red_base64");
+    const evenBase64 = sessionStorage.getItem("overlay_evenness_base64");
+    const redStats = JSON.parse(sessionStorage.getItem("red_stats") || "{}");
+    const evenStats = JSON.parse(sessionStorage.getItem("evenness_stats") || {});
+    const fototipo = sessionStorage.getItem("fototipo_stimato") || "?";
 
-    const img = document.getElementById("overlay-result");
-    const statBox = document.getElementById("statBox");
+    const redImg = document.getElementById("overlay-red");
+    const evenImg = document.getElementById("overlay-evenness");
+    const redBox = document.getElementById("redStatsBox");
+    const evenBox = document.getElementById("evennessStatsBox");
 
-    if (base64) {
-      img.onload = () => {
-        statBox.innerHTML = `
-          🔴 <strong>Red Areas rilevate:</strong><br>
-          Percentuale: <strong>${stats.percentuale_red_areas}%</strong><br>
-          Pixel red: ${stats.pixel_red} su ${stats.pixel_totali} totali<br>
-          Fototipo stimato: <strong>${stats.fototipo_stimato || "?"}</strong>
-        `;
-      };
-      img.src = "data:image/png;base64," + base64;
-    } else {
-      img.style.display = "none";
-      statBox.innerHTML = `
-        ⚠️ Nessun risultato disponibile.<br>
-        Torna alla <a href="index.html">home</a> e ripeti l’analisi.
+    // Red Areas
+    if (redBase64) {
+      redImg.src = "data:image/png;base64," + redBase64;
+      redBox.innerHTML = `
+        🔴 <strong>Red Areas rilevate:</strong><br>
+        Percentuale: <strong>${redStats.percentuale_red_areas}%</strong><br>
+        Pixel red: ${redStats.pixel_red} su ${redStats.pixel_totali}<br>
+        Fototipo stimato: <strong>${fototipo}</strong>
       `;
+    } else {
+      redImg.style.display = "none";
+      redBox.innerHTML = `⚠️ Nessun risultato per Red Areas.`;
+    }
+
+    // Evenness
+    if (evenBase64) {
+      evenImg.src = "data:image/png;base64," + evenBase64;
+      evenBox.innerHTML = `
+        🔵 <strong>Uniformità cutanea:</strong><br>
+        Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
+        Indice Evenness: <strong>${evenStats.evenness_score} / 100</strong><br>
+        Fototipo stimato: <strong>${fototipo}</strong>
+      `;
+    } else {
+      evenImg.style.display = "none";
+      evenBox.innerHTML = `⚠️ Nessun risultato per Skin Evenness.`;
     }
   </script>
 
