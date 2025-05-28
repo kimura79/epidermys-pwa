@@ -61,6 +61,8 @@
   <a href="index.html" class="back-button">Torna alla Home</a>
 
   <script>
+    const BASE_URL = "https://yegzn9io6jvq3e-8888.proxy.runpod.net/output/";
+
     const redFilename = sessionStorage.getItem("overlay_red_filename");
     const evenFilename = sessionStorage.getItem("overlay_evenness_filename");
     const redStats = JSON.parse(sessionStorage.getItem("red_stats") || "{}");
@@ -74,7 +76,7 @@
 
     // === Red Areas ===
     if (redFilename) {
-      redImg.src = "https://app.epidermys.com/output/" + redFilename;
+      redImg.src = BASE_URL + redFilename;
       redBox.innerHTML = `
         🔴 <strong>Red Areas rilevate:</strong><br>
         Percentuale: <strong>${redStats.percentuale_red_areas}%</strong><br>
@@ -88,7 +90,7 @@
 
     // === Evenness ===
     if (evenFilename) {
-      evenImg.src = "https://app.epidermys.com/output/" + evenFilename;
+      evenImg.src = BASE_URL + evenFilename;
       evenBox.innerHTML = `
         🔵 <strong>Uniformità cutanea:</strong><br>
         Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
