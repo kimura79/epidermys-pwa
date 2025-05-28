@@ -74,10 +74,12 @@
     const texturePercent = sessionStorage.getItem("percentuale_texture") || "?";
     const fototipo = sessionStorage.getItem("fototipo_stimato") || "?";
 
+    // Immagini
     document.getElementById("overlay-red").src = redURL || "";
     document.getElementById("overlay-evenness").src = evenURL || "";
     document.getElementById("overlay-texture").src = textureURL || "";
 
+    // Box Red Areas
     document.getElementById("redStatsBox").innerHTML = redURL ? `
       🔴 <strong>Red Areas rilevate:</strong><br>
       Percentuale: <strong>${redStats.percentuale_red_areas}%</strong><br>
@@ -85,6 +87,7 @@
       Fototipo stimato: <strong>${fototipo}</strong>
     ` : `⚠️ Nessun risultato per Red Areas.`;
 
+    // Box Evenness
     document.getElementById("evennessStatsBox").innerHTML = evenURL ? `
       🔵 <strong>Uniformità cutanea:</strong><br>
       Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
@@ -92,6 +95,7 @@
       Fototipo stimato: <strong>${fototipo}</strong>
     ` : `⚠️ Nessun risultato per Skin Evenness.`;
 
+    // Box Texture
     document.getElementById("textureStatsBox").innerHTML = textureURL ? `
       🟠 <strong>Irregolarità di Texture:</strong><br>
       Percentuale area irregolare: <strong>${texturePercent}%</strong><br>
