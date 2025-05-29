@@ -103,25 +103,27 @@
             sessionStorage.setItem("overlay_texture_url", result.overlay_texture_url);
             sessionStorage.setItem("overlay_macchie_url", result.overlay_macchie_url);
 
-            // Statistiche
+            // Statistiche Red Areas
             sessionStorage.setItem("red_stats", JSON.stringify({
               percentuale_red_areas: result.percentuale_red_areas,
-              pixel_totali: result.pixel_totali,
+              pixel_totali_red: result.pixel_totali_red,
               pixel_red: result.pixel_red
             }));
 
+            // Statistiche Evenness
             sessionStorage.setItem("evenness_stats", JSON.stringify({
               percentuale_evenness: result.percentuale_evenness,
               evenness_score: result.evenness_score
             }));
 
+            // Statistica Texture
             sessionStorage.setItem("percentuale_texture", result.percentuale_texture);
             sessionStorage.setItem("fototipo_stimato", result.fototipo_stimato);
 
+            // Statistiche Macchie Cutanee (solo age spots e freckles)
             sessionStorage.setItem("macchie_stats", JSON.stringify({
               percentuale_macchie_totale: result.percentuale_macchie_totale,
               numero_macchie_eta: result.numero_macchie_eta,
-              numero_macchie_uv: result.numero_macchie_uv,
               numero_lentiggini: result.numero_lentiggini
             }));
 
