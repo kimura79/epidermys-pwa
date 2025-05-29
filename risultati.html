@@ -124,9 +124,9 @@
     document.getElementById("macchieStatsBox").innerHTML = macchieURL ? `
       🟣 <strong>Macchie Cutanee:</strong><br>
       Totale superficie coinvolta: <strong>${macchieStats.percentuale_macchie_totale}%</strong><br>
-      Macchie età: <strong>${macchieStats.numero_macchie_eta}</strong> |
-      UV: <strong>${macchieStats.numero_macchie_uv}</strong> |
-      Lentiggini: <strong>${macchieStats.numero_lentiggini}</strong><br>
+      <span style="color:#0066ff;">●</span> Età: <strong>${macchieStats.numero_macchie_eta}</strong> &nbsp;&nbsp;
+      <span style="color:#800080;">●</span> UV: <strong>${macchieStats.numero_macchie_uv}</strong> &nbsp;&nbsp;
+      <span style="color:#00cc00;">●</span> Lentiggini: <strong>${macchieStats.numero_lentiggini}</strong><br>
       Fototipo stimato: <strong>${fototipo}</strong>
     ` : `⚠️ Nessun risultato per Macchie.`;
   </script>
