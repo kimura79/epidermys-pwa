@@ -90,29 +90,25 @@
       else textureClass = "Grave";
     }
 
-    // Immagini
     document.getElementById("overlay-red").src = redURL || "";
     document.getElementById("overlay-evenness").src = evenURL || "";
     document.getElementById("overlay-texture").src = textureURL || "";
     document.getElementById("overlay-macchie").src = macchieURL || "";
 
-    // Red
     document.getElementById("redStatsBox").innerHTML = redURL ? `
       🔴 <strong>Red Areas rilevate:</strong><br>
       Percentuale: <strong>${redStats.percentuale_red_areas}%</strong><br>
-      Pixel red: ${redStats.pixel_red} su ${redStats.pixel_totali}<br>
+      Pixel red: ${redStats.pixel_red} su ${redStats.pixel_totali_red}<br>
       Fototipo stimato: <strong>${fototipo}</strong>
     ` : `⚠️ Nessun risultato per Red Areas.`;
 
-    // Evenness
     document.getElementById("evennessStatsBox").innerHTML = evenURL ? `
       🔵 <strong>Uniformità cutanea:</strong><br>
       Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
-      Indice Evenness: <strong>${evenStats.evenness_score} / 100</strong><br>
+      Indice Evenness: <strong>${evenStats.eveness_score} / 100</strong><br>
       Fototipo stimato: <strong>${fototipo}</strong>
     ` : `⚠️ Nessun risultato per Skin Evenness.`;
 
-    // Texture
     document.getElementById("textureStatsBox").innerHTML = textureURL ? `
       🟠 <strong>Irregolarità di Texture:</strong><br>
       Percentuale area irregolare: <strong>${texturePercent}%</strong><br>
@@ -120,12 +116,10 @@
       Fototipo stimato: <strong>${fototipo}</strong>
     ` : `⚠️ Nessun risultato per Texture Cutanea.`;
 
-    // Macchie
     document.getElementById("macchieStatsBox").innerHTML = macchieURL ? `
       🟣 <strong>Macchie Cutanee:</strong><br>
       Totale superficie coinvolta: <strong>${macchieStats.percentuale_macchie_totale}%</strong><br>
-      <span style="color:#0066ff;">●</span> Età: <strong>${macchieStats.numero_macchie_eta}</strong> &nbsp;&nbsp;
-      <span style="color:#800080;">●</span> UV: <strong>${macchieStats.numero_macchie_uv}</strong> &nbsp;&nbsp;
+      <span style="color:#0066ff;">●</span> Età: <strong>${macchieStats.numero_macchie_eta}</strong><br>
       <span style="color:#00cc00;">●</span> Lentiggini: <strong>${macchieStats.numero_lentiggini}</strong><br>
       Fototipo stimato: <strong>${fototipo}</strong>
     ` : `⚠️ Nessun risultato per Macchie.`;
