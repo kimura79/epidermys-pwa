@@ -89,12 +89,13 @@
           if (!response.ok) throw new Error("Errore server: " + response.status);
           const result = await response.json();
 
-          if (result.overlay_red_url && result.overlay_evenness_url && result.overlay_texture_url) {
+          if (result.overlay_red_url && result.overlay_evenness_url && result.overlay_texture_url && result.overlay_macchie_url) {
             console.log("🟢 Risultato ricevuto:", result);
 
             sessionStorage.setItem("overlay_red_url", result.overlay_red_url);
             sessionStorage.setItem("overlay_evenness_url", result.overlay_evenness_url);
             sessionStorage.setItem("overlay_texture_url", result.overlay_texture_url);
+            sessionStorage.setItem("overlay_macchie_url", result.overlay_macchie_url);
 
             sessionStorage.setItem("red_stats", JSON.stringify({
               percentuale_red_areas: result.percentuale_red_areas,
@@ -109,6 +110,14 @@
 
             sessionStorage.setItem("percentuale_texture", result.percentuale_texture);
             sessionStorage.setItem("fototipo_stimato", result.fototipo_stimato);
+
+            sessionStorage.setItem("macchie_stats", JSON.stringify({
+              percentuale_macchie_totale: result.percentuale_macchie_totale,
+              numero_macchie_eta: result.numero_macchie_eta,
+              numero_macchie_uv: result.numero_macchie_uv,
+              numero_lentiggini: result.numero_lentiggini,
+              percentuali_macchie_zone: result.percentuali_macchie_zone
+            }));
 
             window.location.href = "risultati.html";
           } else {
