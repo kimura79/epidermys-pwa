@@ -89,14 +89,21 @@
           if (!response.ok) throw new Error("Errore server: " + response.status);
           const result = await response.json();
 
-          if (result.overlay_red_url && result.overlay_evenness_url && result.overlay_texture_url && result.overlay_macchie_url) {
+          if (
+            result.overlay_red_url &&
+            result.overlay_evenness_url &&
+            result.overlay_texture_url &&
+            result.overlay_macchie_url
+          ) {
             console.log("🟢 Risultato ricevuto:", result);
 
+            // Overlay URLs
             sessionStorage.setItem("overlay_red_url", result.overlay_red_url);
             sessionStorage.setItem("overlay_evenness_url", result.overlay_evenness_url);
             sessionStorage.setItem("overlay_texture_url", result.overlay_texture_url);
             sessionStorage.setItem("overlay_macchie_url", result.overlay_macchie_url);
 
+            // Statistiche
             sessionStorage.setItem("red_stats", JSON.stringify({
               percentuale_red_areas: result.percentuale_red_areas,
               pixel_totali: result.pixel_totali,
@@ -118,6 +125,7 @@
               numero_lentiggini: result.numero_lentiggini
             }));
 
+            // Vai alla pagina dei risultati
             window.location.href = "risultati.html";
           } else {
             throw new Error("Risposta JSON incompleta");
