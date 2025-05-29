@@ -62,9 +62,9 @@
   <img id="overlay-texture" src="" alt="Overlay Texture">
   <div class="stat-box" id="textureStatsBox">Caricamento risultati...</div>
 
-  <h1>Analisi Macchie Cutanee</h1>
-  <img id="overlay-macchie" src="" alt="Overlay Macchie">
-  <div class="stat-box" id="macchieStatsBox">Caricamento risultati...</div>
+  <h1>Analisi Lentiggini</h1>
+  <img id="overlay-lentiggini" src="" alt="Overlay Lentiggini">
+  <div class="stat-box" id="lentigginiStatsBox">Caricamento risultati...</div>
 
   <a href="index.html" class="back-button">Torna alla Home</a>
 
@@ -72,13 +72,13 @@
     const redURL = sessionStorage.getItem("overlay_red_url");
     const evenURL = sessionStorage.getItem("overlay_evenness_url");
     const textureURL = sessionStorage.getItem("overlay_texture_url");
-    const macchieURL = sessionStorage.getItem("overlay_macchie_url");
+    const lentigginiURL = sessionStorage.getItem("overlay_lentiggini_url");
 
     const redStats = JSON.parse(sessionStorage.getItem("red_stats") || "{}");
     const evenStats = JSON.parse(sessionStorage.getItem("evenness_stats") || "{}");
     const texturePercentStr = sessionStorage.getItem("percentuale_texture") || "?";
     const fototipo = sessionStorage.getItem("fototipo_stimato") || "?";
-    const macchieStats = JSON.parse(sessionStorage.getItem("macchie_stats") || "{}");
+    const lentigginiStats = JSON.parse(sessionStorage.getItem("lentiggini_stats") || "{}");
 
     let textureClass = "?";
     const texturePercent = parseFloat(texturePercentStr);
@@ -93,7 +93,7 @@
     document.getElementById("overlay-red").src = redURL || "";
     document.getElementById("overlay-evenness").src = evenURL || "";
     document.getElementById("overlay-texture").src = textureURL || "";
-    document.getElementById("overlay-macchie").src = macchieURL || "";
+    document.getElementById("overlay-lentiggini").src = lentigginiURL || "";
 
     document.getElementById("redStatsBox").innerHTML = redURL ? `
       🔴 <strong>Red Areas rilevate:</strong><br>
@@ -103,11 +103,11 @@
     ` : `⚠️ Nessun risultato per Red Areas.`;
 
     document.getElementById("evennessStatsBox").innerHTML = evenURL ? `
-  🔵 <strong>Uniformità cutanea:</strong><br>
-  Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
-  Indice Evenness: <strong>${evenStats.evenness_score} / 100</strong><br>
-  Fototipo stimato: <strong>${fototipo}</strong>
-` : `⚠️ Nessun risultato per Skin Evenness.`;;
+      🔵 <strong>Uniformità cutanea:</strong><br>
+      Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
+      Indice Evenness: <strong>${evenStats.eveness_score} / 100</strong><br>
+      Fototipo stimato: <strong>${fototipo}</strong>
+    ` : `⚠️ Nessun risultato per Skin Evenness.`;
 
     document.getElementById("textureStatsBox").innerHTML = textureURL ? `
       🟠 <strong>Irregolarità di Texture:</strong><br>
@@ -116,13 +116,12 @@
       Fototipo stimato: <strong>${fototipo}</strong>
     ` : `⚠️ Nessun risultato per Texture Cutanea.`;
 
-    document.getElementById("macchieStatsBox").innerHTML = macchieURL ? `
-      🟣 <strong>Macchie Cutanee:</strong><br>
-      Totale superficie coinvolta: <strong>${macchieStats.percentuale_macchie_totale}%</strong><br>
-      <span style="color:#0066ff;">●</span> Età: <strong>${macchieStats.numero_macchie_eta}</strong><br>
-      <span style="color:#00cc00;">●</span> Lentiggini: <strong>${macchieStats.numero_lentiggini}</strong><br>
+    document.getElementById("lentigginiStatsBox").innerHTML = lentigginiURL ? `
+      🟡 <strong>Lentiggini rilevate:</strong><br>
+      Percentuale superficie coinvolta: <strong>${lentigginiStats.percentuale_lentiggini || "?"}%</strong><br>
+      Numero lentiggini: <strong>${lentigginiStats.numero_lentiggini || "?"}</strong><br>
       Fototipo stimato: <strong>${fototipo}</strong>
-    ` : `⚠️ Nessun risultato per Macchie.`;
+    ` : `⚠️ Nessun risultato per Lentiggini.`;
   </script>
 
 </body>
