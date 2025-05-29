@@ -30,7 +30,7 @@
       background-color: #eef1f5;
       padding: 15px;
       border-radius: 8px;
-      max-width: 400px;
+      max-width: 500px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -45,6 +45,20 @@
     }
     .back-button:hover {
       background-color: #003f7d;
+    }
+    table {
+      width: 100%;
+      max-width: 460px;
+      margin: 10px auto;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 6px;
+    }
+    th {
+      background-color: #dfe8f2;
     }
   </style>
 </head>
@@ -62,19 +76,26 @@
   <img id="overlay-texture" src="" alt="Overlay Texture">
   <div class="stat-box" id="textureStatsBox">Caricamento risultati...</div>
 
+  <h1>Analisi Macchie Cutanee</h1>
+  <img id="overlay-macchie" src="" alt="Overlay Macchie">
+  <div class="stat-box" id="macchieStatsBox">Caricamento risultati...</div>
+  <div id="macchieTableBox"></div>
+
   <a href="index.html" class="back-button">Torna alla Home</a>
 
   <script>
     const redURL = sessionStorage.getItem("overlay_red_url");
     const evenURL = sessionStorage.getItem("overlay_evenness_url");
     const textureURL = sessionStorage.getItem("overlay_texture_url");
+    const macchieURL = sessionStorage.getItem("overlay_macchie_url");
 
     const redStats = JSON.parse(sessionStorage.getItem("red_stats") || "{}");
     const evenStats = JSON.parse(sessionStorage.getItem("evenness_stats") || "{}");
     const texturePercentStr = sessionStorage.getItem("percentuale_texture") || "?";
     const fototipo = sessionStorage.getItem("fototipo_stimato") || "?";
+    const macchieStats = JSON.parse(sessionStorage.getItem("macchie_stats") || "{}");
 
-    // Converti texture in numero e valuta classificazione
+    // Classificazione texture
     let textureClass = "?";
     const texturePercent = parseFloat(texturePercentStr);
     if (!isNaN(texturePercent)) {
@@ -89,8 +110,9 @@
     document.getElementById("overlay-red").src = redURL || "";
     document.getElementById("overlay-evenness").src = evenURL || "";
     document.getElementById("overlay-texture").src = textureURL || "";
+    document.getElementById("overlay-macchie").src = macchieURL || "";
 
-    // Box Red Areas
+    // Red
     document.getElementById("redStatsBox").innerHTML = redURL ? `
       🔴 <strong>Red Areas rilevate:</strong><br>
       Percentuale: <strong>${redStats.percentuale_red_areas}%</strong><br>
@@ -98,7 +120,7 @@
       Fototipo stimato: <strong>${fototipo}</strong>
     ` : `⚠️ Nessun risultato per Red Areas.`;
 
-    // Box Evenness
+    // Evenness
     document.getElementById("evennessStatsBox").innerHTML = evenURL ? `
       🔵 <strong>Uniformità cutanea:</strong><br>
       Disomogeneità: <strong>${evenStats.percentuale_evenness}%</strong><br>
@@ -106,13 +128,39 @@
       Fototipo stimato: <strong>${fototipo}</strong>
     ` : `⚠️ Nessun risultato per Skin Evenness.`;
 
-    // Box Texture
+    // Texture
     document.getElementById("textureStatsBox").innerHTML = textureURL ? `
       🟠 <strong>Irregolarità di Texture:</strong><br>
       Percentuale area irregolare: <strong>${texturePercent}%</strong><br>
       Classificazione: <strong>${textureClass}</strong><br>
       Fototipo stimato: <strong>${fototipo}</strong>
     ` : `⚠️ Nessun risultato per Texture Cutanea.`;
+
+    // Macchie
+    document.getElementById("macchieStatsBox").innerHTML = macchieURL ? `
+      🟣 <strong>Macchie Cutanee:</strong><br>
+      Totale superficie coinvolta: <strong>${macchieStats.percentuale_macchie_totale}%</strong><br>
+      Macchie età: <strong>${macchieStats.numero_macchie_eta}</strong> |
+      UV: <strong>${macchieStats.numero_macchie_uv}</strong> |
+      Lentiggini: <strong>${macchieStats.numero_lentiggini}</strong>
+    ` : `⚠️ Nessun risultato per Macchie.`;
+
+    // Tabella per zona
+    const percentualiZone = macchieStats.percentuali_macchie_zone || {};
+    if (Object.keys(percentualiZone).length > 0) {
+      let tableHTML = `
+        <table>
+          <thead>
+            <tr><th>Zona</th><th>Età %</th><th>UV %</th><th>Lentiggini %</th></tr>
+          </thead><tbody>
+      `;
+      for (const zona in percentualiZone) {
+        const z = percentualiZone[zona];
+        tableHTML += `<tr><td>${zona}</td><td>${z.age.toFixed(1)}</td><td>${z.uv.toFixed(1)}</td><td>${z.freck.toFixed(1)}</td></tr>`;
+      }
+      tableHTML += `</tbody></table>`;
+      document.getElementById("macchieTableBox").innerHTML = tableHTML;
+    }
   </script>
 
 </body>
